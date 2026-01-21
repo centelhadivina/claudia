@@ -58,10 +58,6 @@ dependencies:
   uuid: ^4.4.0
   intl: ^0.19.0
   mask_text_input_formatter: ^2.9.0
-  
-  # Packages locais
-  sistema_ponto:
-    path: packages/sistema_ponto
 
 dev_dependencies:
   flutter_test:
@@ -86,10 +82,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-    - assets/images/centelha_new.png
-    - assets/CAD_PESSOAS.json
-    - assets/membros_antigos.csv
+  # assets:
+  #   - assets/images/
+  #   - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
