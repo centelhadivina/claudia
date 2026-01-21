@@ -63,4 +63,3 @@ flutter build web --release --base-href /claudia/
 ## 🗂️ Estrutura do Projeto
 
 Veja [ARCHITECTURE.md](ARCHITECTURE.md) para detalhes sobre a arquitetura Clean Architecture implementada.
-
