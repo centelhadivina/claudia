@@ -119,6 +119,28 @@ class MembroModel extends Membro {
     );
   }
 
+  /// Normaliza o status para os valores padrão do sistema
+  static String _normalizarStatus(String? status) {
+    if (status == null || status.isEmpty) return '';
+    
+    final statusUpper = status.toUpperCase().trim();
+    final statusNormalizado = (switch (statusUpper) {
+      'ATIVO' => 'Membro ativo',
+      'INATIVO' => 'Excluído',
+      'SUSPENSO' => 'Excluído',
+      'ESTAGIÁRIO' || 'ESTAGIARIO' => 'Estagiário',
+      'MEMBRO ATIVO' => 'Membro ativo',
+      'EXCLUÍDO' || 'EXCLUIDO' => 'Excluído',
+      _ => status,
+    });
+    
+    if (statusNormalizado != status) {
+      print('🔄 [MEMBRO MODEL] Status normalizado: "$status" → "$statusNormalizado"');
+    }
+    
+    return statusNormalizado;
+  }
+
   factory MembroModel.fromJson(Map<String, dynamic> json) {
     return MembroModel(
       id:
@@ -129,7 +151,7 @@ class MembroModel extends Membro {
       cpf: json['cpf']?.toString() ?? '',
       nome: json['nome']?.toString() ?? '',
       nucleo: json['nucleo']?.toString() ?? '',
-      status: json['status']?.toString() ?? '',
+      status: _normalizarStatus(json['status']?.toString()),
       funcao: json['funcao']?.toString() ?? '',
       classificacao: json['classificacao']?.toString() ?? '',
       diaSessao:
