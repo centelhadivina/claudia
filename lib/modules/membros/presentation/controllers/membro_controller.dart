@@ -108,7 +108,7 @@ class MembroController extends GetxController {
 
   /// Filtra membros para relatórios
   List<Membro> filtrarParaRelatorio({
-    String? status,
+    List<String>? statusList, // Múltiplos status
     String? funcao,
     String? classificacao,
     String? diaSessao,
@@ -121,8 +121,11 @@ class MembroController extends GetxController {
   }) {
     var resultado = List<Membro>.from(membros);
 
-    if (status != null && status.isNotEmpty) {
-      resultado = resultado.where((m) => m.status == status).toList();
+    // Filtro de múltiplos status
+    if (statusList != null && statusList.isNotEmpty) {
+      resultado = resultado
+          .where((m) => statusList.contains(m.status))
+          .toList();
     }
 
     if (funcao != null && funcao.isNotEmpty) {

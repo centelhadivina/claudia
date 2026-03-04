@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:html' as html;
+
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,7 +22,7 @@ class _RelatoriosMembroPageState extends State<RelatoriosMembroPage> {
   final membroController = Get.find<MembroController>();
 
   // Filtros
-  String? statusFiltro;
+  List<String> statusFiltro = []; // Múltiplos status
   String? funcaoFiltro;
   String? classificacaoFiltro;
   String? diaSessaoFiltro;
@@ -62,13 +66,34 @@ class _RelatoriosMembroPageState extends State<RelatoriosMembroPage> {
                 ),
                 const Divider(),
                 
-                _buildDropdownFiltro(
-                  label: 'Status',
-                  value: statusFiltro,
-                  items: MembroConstants.statusOpcoes,
-                  onChanged: (v) => setState(() => statusFiltro = v),
+                // Filtro de Status (checkboxes para múltiplos)
+                const Text(
+                  'Status',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                const SizedBox(height: 8),
+                ...MembroConstants.statusOpcoes.map((status) {
+                  return CheckboxListTile(
+                    title: Text(status, style: const TextStyle(fontSize: 12)),
+                    value: statusFiltro.contains(status),
+                    onChanged: (checked) {
+                      setState(() {
+                        if (checked ?? false) {
+                          statusFiltro.add(status);
+                        } else {
+                          statusFiltro.remove(status);
+                        }
+                      });
+                    },
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                  );
+                }).toList(),
                 
+                const SizedBox(height: 16),
                 _buildDropdownFiltro(
                   label: 'Função',
                   value: funcaoFiltro,
@@ -363,32 +388,96 @@ class _RelatoriosMembroPageState extends State<RelatoriosMembroPage> {
   }
 
   void _exportarParaExcel() {
-    // TODO: Implementar exportação real para Excel
-    Get.snackbar(
-      'Exportação',
-      'Exportando ${resultados.length} registros para Excel...',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      duration: const Duration(seconds: 2),
-    );
-    
-    // Simular exportação
-    Future.delayed(const Duration(seconds: 2), () {
+    if (resultados.isEmpty) {
       Get.snackbar(
-        'Sucesso',
-        'Relatório exportado com sucesso!',
+        'Aviso',
+        'Nenhum registro para exportar',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      // Preparar dados em forma de CSV
+      final List<List<dynamic>> csvData = [
+        // Cabeçalho
+        [
+          'Nº Cadastro',
+          'Nome',
+          'Núcleo',
+          'Status',
+          'Função',
+          'Classificação',
+          'Dia Sessão',
+          '1º Orixá',
+          'Batizado',
+          'Jogo Orixá',
+          'Atividade Espiritual',
+          'Grupo Trabalho',
+        ],
+        // Dados
+        ...resultados.map((membro) => [
+          membro.numeroCadastro,
+          membro.nome,
+          membro.nucleo,
+          membro.status,
+          membro.funcao,
+          membro.classificacao,
+          membro.diaSessao,
+          membro.primeiroOrixa ?? '-',
+          membro.dataBatizado != null ? 'Sim' : 'Não',
+          membro.dataJogoOrixa != null ? 'Sim' : 'Não',
+          membro.atividadeEspiritual ?? '-',
+          membro.grupoTrabalhoEspiritual ?? '-',
+        ]),
+      ];
+
+      // Converter para CSV
+      String csvContent = const ListToCsvConverter().convert(csvData);
+
+      // Criar blob e fazer download
+      final bytes = utf8.encode(csvContent);
+      final blob = html.Blob([bytes]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.document.createElement('a') as html.AnchorElement
+        ..href = url
+        ..style.display = 'none'
+        ..download =
+            'relatorio_membros_${DateTime.now().toString().replaceAll(':', '-').split('.').first}.csv';
+
+      html.document.body!.children.add(anchor);
+      anchor.click();
+
+      // Limpar
+      html.document.body!.children.remove(anchor);
+      html.Url.revokeObjectUrl(url);
+
+      Get.snackbar(
+        '✅ Sucesso',
+        'Relatório exportado com sucesso!\n${resultados.length} registros baixados',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,
+        duration: const Duration(seconds: 3),
       );
-    });
+    } catch (e) {
+      print('❌ Erro ao exportar: $e');
+      Get.snackbar(
+        '❌ Erro',
+        'Erro ao exportar: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 
   void _gerarRelatorio() {
     setState(() {
       resultados = membroController.filtrarParaRelatorio(
-        status: statusFiltro,
+        statusList: statusFiltro.isNotEmpty ? statusFiltro : null,
         funcao: funcaoFiltro,
         classificacao: classificacaoFiltro,
         diaSessao: diaSessaoFiltro,
@@ -405,7 +494,7 @@ class _RelatoriosMembroPageState extends State<RelatoriosMembroPage> {
 
   void _limparFiltros() {
     setState(() {
-      statusFiltro = null;
+      statusFiltro = [];
       funcaoFiltro = null;
       classificacaoFiltro = null;
       diaSessaoFiltro = null;
