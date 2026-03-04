@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../../core/constants/membro_constants.dart';
 import '../../domain/entities/membro.dart';
 import '../controllers/membro_controller.dart';
+import '../../../organizacao/presentation/controllers/nucleo_controller.dart';
 
 /// Página para editar dados de membro da CLAUDIA
 /// Disponível para níveis 2 e 4
@@ -16,6 +17,7 @@ class EditarMembroPage extends StatefulWidget {
 
 class _EditarMembroPageState extends State<EditarMembroPage> {
   final membroController = Get.find<MembroController>();
+  final nucleoController = Get.find<NucleoController>();
   final numeroController = TextEditingController();
 
   Membro? membroSelecionado;
@@ -254,6 +256,7 @@ class _FormularioEdicaoPage extends StatefulWidget {
 class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
   final _formKey = GlobalKey<FormState>();
   final membroController = Get.find<MembroController>();
+  final nucleoController = Get.find<NucleoController>();
 
   late final TextEditingController contato1Controller;
   late final TextEditingController contato2Controller;
@@ -294,11 +297,15 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
           padding: const EdgeInsets.all(16),
           children: [
             _buildSecaoTitulo('INFORMAÇÕES ORGANIZACIONAIS'),
-            _buildDropdown(
-              value: nucleoSelecionado,
-              label: 'Núcleo *',
-              items: MembroConstants.nucleoOpcoes,
-              onChanged: (v) => setState(() => nucleoSelecionado = v!),
+            Obx(
+              () => _buildDropdown(
+                value: nucleoSelecionado,
+                label: 'Núcleo *',
+                items: nucleoController.nucleos
+                    .map((n) => n.nome)
+                    .toList(),
+                onChanged: (v) => setState(() => nucleoSelecionado = v!),
+              ),
             ),
             _buildDropdown(
               value: statusSelecionado,
