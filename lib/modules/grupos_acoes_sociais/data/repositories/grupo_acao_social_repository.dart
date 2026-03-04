@@ -4,6 +4,8 @@ import '../models/grupo_acao_social_membro_model.dart';
 
 /// Interface do repositório
 abstract class GrupoAcaoSocialRepository {
+  Future<List<String>> carregarFuncoesDisponiveis();
+  Future<List<String>> carregarGruposDisponiveis();
   Future<List<GrupoAcaoSocialMembro>> filtrar({
     String? grupoAcaoSocial,
     String? funcao,
@@ -19,6 +21,16 @@ class GrupoAcaoSocialRepositoryImpl implements GrupoAcaoSocialRepository {
   final GrupoAcaoSocialDatasource datasource;
 
   GrupoAcaoSocialRepositoryImpl(this.datasource);
+
+  @override
+  Future<List<String>> carregarFuncoesDisponiveis() async {
+    return await datasource.carregarFuncoesDisponiveis();
+  }
+
+  @override
+  Future<List<String>> carregarGruposDisponiveis() async {
+    return await datasource.carregarGruposDisponiveis();
+  }
 
   @override
   Future<List<GrupoAcaoSocialMembro>> filtrar({

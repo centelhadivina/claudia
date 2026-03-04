@@ -1,3 +1,4 @@
+import '../../../../core/constants/grupo_acao_social_constants.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/supabase_service.dart';
 import '../models/grupo_acao_social_membro_model.dart';
@@ -26,7 +27,9 @@ class GrupoAcaoSocialSupabaseDatasource implements GrupoAcaoSocialDatasource {
       await _supabaseService.client.from('grupos_acoes_sociais').insert(data);
       _cache.add(membro);
     } catch (error) {
-      throw ServerException('Erro ao adicionar membro ao grupo ação social: $error');
+      throw ServerException(
+        'Erro ao adicionar membro ao grupo ação social: $error',
+      );
     }
   }
 
@@ -49,7 +52,44 @@ class GrupoAcaoSocialSupabaseDatasource implements GrupoAcaoSocialDatasource {
         _cache[index] = membro;
       }
     } catch (error) {
-      throw ServerException('Erro ao atualizar membro do grupo ação social: $error');
+      throw ServerException(
+        'Erro ao atualizar membro do grupo ação social: $error',
+      );
+    }
+  }
+
+  /// Busca todas as funções disponíveis (Líder, Membro)
+  @override
+  Future<List<String>> carregarFuncoesDisponiveis() async {
+    // As funções são constantes, mas podemos retornar uma lista
+    return ['Líder', 'Membro'];
+  }
+
+  /// Busca todos os grupos de ação social disponíveis da tabela grupos
+  @override
+  Future<List<String>> carregarGruposDisponiveis() async {
+    try {
+      print('🔍 [GRUPOS AÇÕES SOCIAIS] Carregando grupos disponíveis...');
+      final response = await _supabaseService.client
+          .from('grupos_acoes_sociais')
+          .select('grupo_acao_social')
+          .not('grupo_acao_social', 'is', null)
+          .order('grupo_acao_social', ascending: true);
+
+      final grupos = (response as List)
+          .map((json) => json['grupo_acao_social'] as String)
+          .where((nome) => nome.trim().isNotEmpty)
+          .toSet()
+          .toList();
+
+      print('✅ [GRUPOS AÇÕES SOCIAIS] ${grupos.length} grupos carregados');
+      return grupos;
+    } catch (e) {
+      print(
+        '⚠️ [GRUPOS AÇÕES SOCIAIS] Carregando grupos das constantes (fallback): $e',
+      );
+      // Fallback para constantes se tabela não existir
+      return GrupoAcaoSocialConstants.gruposOpcoes;
     }
   }
 
@@ -82,9 +122,9 @@ class GrupoAcaoSocialSupabaseDatasource implements GrupoAcaoSocialDatasource {
     await _garantirCacheCarregado();
 
     return _cache.cast<GrupoAcaoSocialMembroModel?>().firstWhere(
-          (m) => m?.numeroCadastro == numeroCadastro,
-          orElse: () => null,
-        );
+      (m) => m?.numeroCadastro == numeroCadastro,
+      orElse: () => null,
+    );
   }
 
   @override
@@ -103,7 +143,9 @@ class GrupoAcaoSocialSupabaseDatasource implements GrupoAcaoSocialDatasource {
 
       _cache.removeWhere((m) => m.numeroCadastro == numeroCadastro);
     } catch (error) {
-      throw ServerException('Erro ao remover membro do grupo ação social: $error');
+      throw ServerException(
+        'Erro ao remover membro do grupo ação social: $error',
+      );
     }
   }
 
@@ -120,9 +162,7 @@ class GrupoAcaoSocialSupabaseDatasource implements GrupoAcaoSocialDatasource {
 
       _cache.clear();
       _cache.addAll(
-        (response as List)
-            .map((json) => _supabaseJsonToModel(json))
-            .toList(),
+        (response as List).map((json) => _supabaseJsonToModel(json)).toList(),
       );
       _cacheCarregado = true;
       print('✅ [GRUPOS AÇÕES SOCIAIS] ${_cache.length} membros carregados');

@@ -1,4 +1,4 @@
-# 🎯 Melhorias no Relatório de Membros
+grup# 🎯 Melhorias no Relatório de Membros
 
 ## ✨ Novos Recursos Implementados
 
@@ -7,13 +7,15 @@
 Agora você pode selecionar **multiple status** simultaneamente para gerar um único relatório com membros de diferentes categorias.
 
 #### Como usar:
+
 - Vá para **"Relatórios de Membros"**
 - Em vez de um dropdown, veja **checkboxes para cada status**:
   - ☑️ Membro ativo
-  - ☐ Estagiário  
+  - ☐ Estagiário
   - ☐ Excluído
 
 #### Exemplos de Uso:
+
 ```
 Caso 1: "Ativos + Estagiários"
 - Selecione ✓ Membro ativo
@@ -37,6 +39,7 @@ Caso 3: "Todos os Status"
 A exportação **agora funciona de verdade**! Quando clica "Exportar para Excel", o arquivo é gerado e baixado automaticamente.
 
 #### Recursos:
+
 - ✅ Gera arquivo **CSV** (formato compatível com Excel, Google Sheets, etc.)
 - ✅ **Download automático** no navegador
 - ✅ Nome com timestamp: `relatorio_membros_2026-03-04T12-00-00.csv`
@@ -44,12 +47,14 @@ A exportação **agora funciona de verdade**! Quando clica "Exportar para Excel"
 - ✅ Mensagens de feedback (sucesso/erro)
 
 #### Como usar:
+
 1. Preencha os filtros (ou deixe em branco para todos)
 2. Clique **"Gerar Relatório"**
 3. Clique **"Exportar para Excel"** (botão verde)
 4. Arquivo é baixado automaticamente para `/Downloads`
 
 #### Tratamento de Erros:
+
 ```
 ✓ Se não houver registros → Mensagem: "Nenhum registro para exportar"
 ✓ Se houver erro → Mensagem com detalhes do erro
@@ -67,6 +72,7 @@ M260305,João Santos,Casa Pai Oxalá,Estagiário,Cambono,3º Grau,Sexta-feira,Og
 ```
 
 ### Abrir no Excel
+
 1. Baixe o arquivo `.csv`
 2. Abra com **Excel / Google Sheets / Libre Office**
 3. Pode editar, formatar, imprimir normalmente
@@ -74,19 +80,22 @@ M260305,João Santos,Casa Pai Oxalá,Estagiário,Cambono,3º Grau,Sexta-feira,Og
 ## 🔧 Mudanças no Código
 
 ### lib/modules/membros/presentation/pages/relatorios_membro_page.dart
+
 - **Linha 1-4**: Adicionados imports para `dart:html`, `csv` e `convert`
 - **Linha ~20**: `statusFiltro: String?` → `statusFiltro: List<String>`
 - **Linha ~70**: Dropdown de status → **Checkboxes** para múltiplas seleções
 - **Linha ~380-450**: Implementação real de exportação CSV com download
 
 ### lib/modules/membros/presentation/controllers/membro_controller.dart
-- **Método `filtrarParaRelatorio()`**: 
+
+- **Método `filtrarParaRelatorio()`**:
   - Parâmetro: `status: String?` → `statusList: List<String>?`
   - Lógica: Verifica se membro está em QUALQUER status da lista
 
 ## 🧪 Como Testar
 
 ### Teste 1: Múltiplos Status
+
 ```
 1. Abra /relatorios-membros
 2. Selecione "Membro ativo" + "Estagiário"
@@ -95,6 +104,7 @@ M260305,João Santos,Casa Pai Oxalá,Estagiário,Cambono,3º Grau,Sexta-feira,Og
 ```
 
 ### Teste 2: Exportação CSV
+
 ```
 1. Gere um relatório (veja Teste 1)
 2. Clique "Exportar para Excel"
@@ -103,6 +113,7 @@ M260305,João Santos,Casa Pai Oxalá,Estagiário,Cambono,3º Grau,Sexta-feira,Og
 ```
 
 ### Teste 3: Validações
+
 ```
 1. Clique "Exportar para Excel" SEM gerar relatório
    → Aviso: "Nenhum registro para exportar"
@@ -115,12 +126,14 @@ M260305,João Santos,Casa Pai Oxalá,Estagiário,Cambono,3º Grau,Sexta-feira,Og
 ## 📈 Melhorias Futuras
 
 ### Phase 2:
+
 - [ ] Exportar para **Excel .xlsx** (formato binário melhor)
 - [ ] Adicionar **gráficos** no relatório
 - [ ] Salvar **templates** de filtros frequentes
 - [ ] Email automático de relatórios
 
 ### Phase 3:
+
 - [ ] Agendamento automático de relatórios
 - [ ] Relatórios em PDF
 - [ ] Dashboard com estatísticas
@@ -128,12 +141,14 @@ M260305,João Santos,Casa Pai Oxalá,Estagiário,Cambono,3º Grau,Sexta-feira,Og
 ## ⚠️ Notas Técnicas
 
 ### Por que CSV e não Excel?
+
 - CSV é compatível com **todos os aplicativos** (Excel, Sheets, Calc)
 - Tamanho menor
 - Para grandes volumes (10k+) é mais eficiente
 - Pode adicionar suporte para .xlsx depois se necessário
 
 ### Funcionamento do Download
+
 - Usa `dart:html` (web only)
 - Cria um Blob em memória
 - Gera URL temporária
@@ -153,6 +168,7 @@ feat: Permitir múltiplos status e CSV export real
 ```
 
 **Status**: ✅ Em produção (GitHub Pages)
+
 - URL: https://centelhadivina.github.io/claudia/
 - Workflow: ✅ Concluído
 

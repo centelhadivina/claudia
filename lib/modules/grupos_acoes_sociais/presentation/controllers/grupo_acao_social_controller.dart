@@ -8,6 +8,8 @@ class GrupoAcaoSocialController extends GetxController {
   final GrupoAcaoSocialRepository repository;
 
   final RxList<GrupoAcaoSocialMembro> membros = <GrupoAcaoSocialMembro>[].obs;
+  final RxList<String> gruposDisponiveis = <String>[].obs;
+  final RxList<String> funcoesDisponiveis = <String>[].obs;
 
   final RxBool isLoading = false.obs;
   GrupoAcaoSocialController(this.repository);
@@ -50,6 +52,7 @@ class GrupoAcaoSocialController extends GetxController {
   void onInit() {
     super.onInit();
     carregarTodos();
+    _carregarDadosDinamicos();
   }
 
   Future<void> remover(String numeroCadastro) async {
@@ -91,6 +94,18 @@ class GrupoAcaoSocialController extends GetxController {
       );
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> _carregarDadosDinamicos() async {
+    try {
+      gruposDisponiveis.value = await repository.carregarGruposDisponiveis();
+      funcoesDisponiveis.value = await repository.carregarFuncoesDisponiveis();
+    } catch (e) {
+      print('Erro ao carregar dados dinâmicos: $e');
+      // Fallback to empty lists
+      gruposDisponiveis.value = [];
+      funcoesDisponiveis.value = [];
     }
   }
 }

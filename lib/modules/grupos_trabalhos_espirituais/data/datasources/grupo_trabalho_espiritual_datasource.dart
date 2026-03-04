@@ -4,6 +4,9 @@ import '../models/grupo_trabalho_espiritual_membro_model.dart';
 abstract class GrupoTrabalhoEspiritualDatasource {
   Future<void> adicionar(GrupoTrabalhoEspiritualMembroModel membro);
   Future<void> atualizar(GrupoTrabalhoEspiritualMembroModel membro);
+  Future<List<String>> carregarAtividadesDisponiveis();
+  Future<List<String>> carregarFuncoesDisponiveis();
+  Future<List<String>> carregarGruposEspirituaisDisponiveis();
   Future<List<GrupoTrabalhoEspiritualMembroModel>> filtrar({
     String? atividadeEspiritual,
     String? grupoTrabalho,
@@ -48,6 +51,21 @@ class GrupoTrabalhoEspiritualDatasourceImpl implements GrupoTrabalhoEspiritualDa
     if (index != -1) {
       _membros[index] = membro;
     }
+  }
+
+  @override
+  Future<List<String>> carregarAtividadesDisponiveis() async {
+    return [];
+  }
+
+  @override
+  Future<List<String>> carregarFuncoesDisponiveis() async {
+    return [];
+  }
+
+  @override
+  Future<List<String>> carregarGruposEspirituaisDisponiveis() async {
+    return [];
   }
 
   @override

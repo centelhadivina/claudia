@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/constants/grupo_acao_social_constants.dart';
 import '../../domain/entities/grupo_acao_social_membro.dart';
 import '../controllers/grupo_acao_social_controller.dart';
 
@@ -63,7 +62,7 @@ class _RelatoriosGrupoAcaoSocialPageState
                       value: null,
                       child: Text('(Todos)'),
                     ),
-                    ...GrupoAcaoSocialConstants.gruposOpcoes.map((grupo) {
+                    ...grupoAcaoSocialController.gruposDisponiveis.map((grupo) {
                       return DropdownMenuItem<String>(
                         value: grupo,
                         child: Text(grupo),
@@ -88,7 +87,9 @@ class _RelatoriosGrupoAcaoSocialPageState
                       value: null,
                       child: Text('(Todas)'),
                     ),
-                    ...GrupoAcaoSocialConstants.funcoesOpcoes.map((funcao) {
+                    ...grupoAcaoSocialController.funcoesDisponiveis.map((
+                      funcao,
+                    ) {
                       return DropdownMenuItem<String>(
                         value: funcao,
                         child: Text(funcao),

@@ -1,3 +1,4 @@
+import '../../../../core/constants/grupo_trabalho_espiritual_constants.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/supabase_service.dart';
 import '../models/grupo_trabalho_espiritual_membro_model.dart';
@@ -30,7 +31,8 @@ class GrupoTrabalhoEspiritualSupabaseDatasource
       _cache.add(membro);
     } catch (error) {
       throw ServerException(
-          'Erro ao adicionar membro ao grupo trabalho espiritual: $error');
+        'Erro ao adicionar membro ao grupo trabalho espiritual: $error',
+      );
     }
   }
 
@@ -54,7 +56,75 @@ class GrupoTrabalhoEspiritualSupabaseDatasource
       }
     } catch (error) {
       throw ServerException(
-          'Erro ao atualizar membro do grupo trabalho espiritual: $error');
+        'Erro ao atualizar membro do grupo trabalho espiritual: $error',
+      );
+    }
+  }
+
+  /// Busca todas as atividades espirituais disponíveis da tabela grupos
+  @override
+  Future<List<String>> carregarAtividadesDisponiveis() async {
+    try {
+      print('🔍 [GRUPOS TRABALHOS ESPIRITUAIS] Carregando atividades...');
+      final response = await _supabaseService.client
+          .from('grupos_trabalhos_espirituais')
+          .select('atividade_espiritual')
+          .not('atividade_espiritual', 'is', null)
+          .order('atividade_espiritual', ascending: true);
+
+      final atividades = (response as List)
+          .map((json) => json['atividade_espiritual'] as String)
+          .where((nome) => nome.trim().isNotEmpty)
+          .toSet()
+          .toList();
+
+      print(
+        '✅ [GRUPOS TRABALHOS ESPIRITUAIS] ${atividades.length} atividades carregadas',
+      );
+      return atividades;
+    } catch (e) {
+      print(
+        '⚠️ [GRUPOS TRABALHOS ESPIRITUAIS] Carregando atividades das constantes (fallback): $e',
+      );
+      // Fallback para constantes se tabela não existir
+      return GrupoTrabalhoEspiritualConstants.atividadesOpcoes;
+    }
+  }
+
+  /// Busca todas as funções disponíveis (Líder, Membro)
+  @override
+  Future<List<String>> carregarFuncoesDisponiveis() async {
+    // As funções são constantes, mas podemos retornar uma lista
+    return ['Líder', 'Membro'];
+  }
+
+  /// Busca todos os grupos de trabalho espiritual disponíveis da tabela grupos_trabalhos_espirituais
+  @override
+  Future<List<String>> carregarGruposEspirituaisDisponiveis() async {
+    try {
+      print('🔍 [GRUPOS TRABALHOS ESPIRITUAIS] Carregando grupos...');
+      final response = await _supabaseService.client
+          .from('grupos_trabalhos_espirituais')
+          .select('grupo_trabalho')
+          .not('grupo_trabalho', 'is', null)
+          .order('grupo_trabalho', ascending: true);
+
+      final grupos = (response as List)
+          .map((json) => json['grupo_trabalho'] as String)
+          .where((nome) => nome.trim().isNotEmpty)
+          .toSet()
+          .toList();
+
+      print(
+        '✅ [GRUPOS TRABALHOS ESPIRITUAIS] ${grupos.length} grupos carregados',
+      );
+      return grupos;
+    } catch (e) {
+      print(
+        '⚠️ [GRUPOS TRABALHOS ESPIRITUAIS] Carregando grupos das constantes (fallback): $e',
+      );
+      // Fallback para constantes se tabela não existir
+      return GrupoTrabalhoEspiritualConstants.gruposTrabalhoOpcoes;
     }
   }
 
@@ -75,8 +145,9 @@ class GrupoTrabalhoEspiritualSupabaseDatasource
     }
 
     if (grupoTrabalho != null && grupoTrabalho.isNotEmpty) {
-      resultado =
-          resultado.where((m) => m.grupoTrabalho == grupoTrabalho).toList();
+      resultado = resultado
+          .where((m) => m.grupoTrabalho == grupoTrabalho)
+          .toList();
     }
 
     if (funcao != null && funcao.isNotEmpty) {
@@ -93,9 +164,9 @@ class GrupoTrabalhoEspiritualSupabaseDatasource
     await _garantirCacheCarregado();
 
     return _cache.cast<GrupoTrabalhoEspiritualMembroModel?>().firstWhere(
-          (m) => m?.numeroCadastro == numeroCadastro,
-          orElse: () => null,
-        );
+      (m) => m?.numeroCadastro == numeroCadastro,
+      orElse: () => null,
+    );
   }
 
   @override
@@ -115,7 +186,8 @@ class GrupoTrabalhoEspiritualSupabaseDatasource
       _cache.removeWhere((m) => m.numeroCadastro == numeroCadastro);
     } catch (error) {
       throw ServerException(
-          'Erro ao remover membro do grupo trabalho espiritual: $error');
+        'Erro ao remover membro do grupo trabalho espiritual: $error',
+      );
     }
   }
 
@@ -132,13 +204,12 @@ class GrupoTrabalhoEspiritualSupabaseDatasource
 
       _cache.clear();
       _cache.addAll(
-        (response as List)
-            .map((json) => _supabaseJsonToModel(json))
-            .toList(),
+        (response as List).map((json) => _supabaseJsonToModel(json)).toList(),
       );
       _cacheCarregado = true;
       print(
-          '✅ [GRUPOS TRABALHOS ESPIRITUAIS] ${_cache.length} membros carregados');
+        '✅ [GRUPOS TRABALHOS ESPIRITUAIS] ${_cache.length} membros carregados',
+      );
     } catch (e) {
       print('❌ [GRUPOS TRABALHOS ESPIRITUAIS] Erro ao carregar: $e');
     }
@@ -152,7 +223,8 @@ class GrupoTrabalhoEspiritualSupabaseDatasource
 
   /// Converte model para JSON do Supabase (snake_case)
   Map<String, dynamic> _modelToSupabaseJson(
-      GrupoTrabalhoEspiritualMembroModel model) {
+    GrupoTrabalhoEspiritualMembroModel model,
+  ) {
     return {
       'numero_cadastro': model.numeroCadastro,
       'nome': model.nome,
@@ -166,7 +238,8 @@ class GrupoTrabalhoEspiritualSupabaseDatasource
 
   /// Converte JSON do Supabase para model
   GrupoTrabalhoEspiritualMembroModel _supabaseJsonToModel(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return GrupoTrabalhoEspiritualMembroModel(
       numeroCadastro: json['numero_cadastro']?.toString() ?? '',
       nome: json['nome']?.toString() ?? '',

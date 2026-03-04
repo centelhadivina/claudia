@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/constants/grupo_trabalho_espiritual_constants.dart';
 import '../../../membros/presentation/controllers/membro_controller.dart';
 import '../../domain/entities/grupo_trabalho_espiritual_membro.dart';
 import '../controllers/grupo_trabalho_espiritual_controller.dart';
@@ -240,8 +239,8 @@ class _GerenciarGrupoTrabalhoEspiritualPageState
                             labelText: 'Atividade Espiritual *',
                             border: OutlineInputBorder(),
                           ),
-                          items: GrupoTrabalhoEspiritualConstants
-                              .atividadesOpcoes
+                          items: grupoTrabalhoEspiritualController
+                              .atividadesDisponiveis
                               .map((atividade) {
                                 return DropdownMenuItem<String>(
                                   value: atividade,
@@ -252,7 +251,11 @@ class _GerenciarGrupoTrabalhoEspiritualPageState
                           onChanged: (v) {
                             setState(() {
                               atividadeEspiritualSelecionada = v;
-                              _atualizarGruposDisponiveis();
+                              // Show all available groups when activity is selected
+                              gruposDisponiveis =
+                                  grupoTrabalhoEspiritualController
+                                      .gruposEspirituaisDisponiveis
+                                      .toList();
                             });
                           },
                         ),
@@ -285,7 +288,8 @@ class _GerenciarGrupoTrabalhoEspiritualPageState
                             labelText: 'Função no Grupo *',
                             border: OutlineInputBorder(),
                           ),
-                          items: GrupoTrabalhoEspiritualConstants.funcoesOpcoes
+                          items: grupoTrabalhoEspiritualController
+                              .funcoesDisponiveis
                               .map((funcao) {
                                 return DropdownMenuItem<String>(
                                   value: funcao,
@@ -347,28 +351,6 @@ class _GerenciarGrupoTrabalhoEspiritualPageState
     super.dispose();
   }
 
-  void _atualizarGruposDisponiveis() {
-    if (atividadeEspiritualSelecionada != null) {
-      setState(() {
-        gruposDisponiveis =
-            GrupoTrabalhoEspiritualConstants.getGruposPorAtividade(
-              atividadeEspiritualSelecionada!,
-            );
-
-        // Se o grupo atual não pertence à nova atividade, limpa a seleção
-        if (grupoTrabalhoSelecionado != null &&
-            !gruposDisponiveis.contains(grupoTrabalhoSelecionado)) {
-          grupoTrabalhoSelecionado = null;
-        }
-      });
-    } else {
-      setState(() {
-        gruposDisponiveis = [];
-        grupoTrabalhoSelecionado = null;
-      });
-    }
-  }
-
   void _buscarMembro() async {
     final numero = _numeroCadastroController.text.trim();
     if (numero.isEmpty) {
@@ -409,7 +391,10 @@ class _GerenciarGrupoTrabalhoEspiritualPageState
             grupoTrabalhoAtual!.atividadeEspiritual;
         grupoTrabalhoSelecionado = grupoTrabalhoAtual!.grupoTrabalho;
         funcaoSelecionada = grupoTrabalhoAtual!.funcao;
-        _atualizarGruposDisponiveis();
+        // Load available groups from controller
+        gruposDisponiveis = grupoTrabalhoEspiritualController
+            .gruposEspirituaisDisponiveis
+            .toList();
       } else {
         atividadeEspiritualSelecionada = null;
         grupoTrabalhoSelecionado = null;
