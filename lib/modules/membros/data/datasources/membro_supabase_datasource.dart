@@ -19,10 +19,11 @@ class MembroSupabaseDatasource implements MembroDatasource {
   @override
   void adicionarMembro(MembroModel membro) {
     // Operação assíncrona em background
-    final data = membro.toJson();
+    var data = membro.toJson();
     data.remove('id');
     data.remove('data_criacao');
     data.remove('data_ultima_alteracao');
+    data = _convertToSnakeCase(data);
 
     _garantirCacheCarregado()
         .then((_) {
@@ -42,8 +43,11 @@ class MembroSupabaseDatasource implements MembroDatasource {
       throw ServerException('ID é obrigatório para atualização');
     }
 
-    final data = membro.toJson();
+    var data = membro.toJson();
+    data.remove('id');
     data.remove('data_criacao');
+    data.remove('data_ultima_alteracao');
+    data = _convertToSnakeCase(data);
 
     _supabaseService.client
         .from('membros_historico')
@@ -157,5 +161,34 @@ class MembroSupabaseDatasource implements MembroDatasource {
   Future<void> _garantirCacheCarregado() async {
     if (_cacheCarregado) return;
     await _carregarCache();
+  }
+
+  /// Converte camelCase para snake_case
+  /// Ex: "numeroCadastro" → "numero_cadastro"
+  static String _camelToSnakeCase(String input) {
+    final buffer = StringBuffer();
+    for (int i = 0; i < input.length; i++) {
+      final char = input[i];
+      if (char.toUpperCase() == char && i > 0) {
+        buffer.write('_');
+        buffer.write(char.toLowerCase());
+      } else {
+        buffer.write(char);
+      }
+    }
+    return buffer.toString();
+  }
+
+  /// Converte um mapa inteiro de camelCase para snake_case
+  /// Preserva valores null e não reconverte campos já em snake_case
+  static Map<String, dynamic> _convertToSnakeCase(Map<String, dynamic> json) {
+    final result = <String, dynamic>{};
+    json.forEach((key, value) {
+      // Alguns campos já estão em snake_case (como id, cpf)
+      // Conversão é idempotente: snake_case → snake_case = snake_case
+      final snakeKey = _camelToSnakeCase(key);
+      result[snakeKey] = value;
+    });
+    return result;
   }
 }
