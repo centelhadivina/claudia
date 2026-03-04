@@ -282,14 +282,15 @@ flutter run -d chrome
 
 O script configura políticas RLS que permitem:
 
-| Operação | Permissão |
-|----------|-----------|
-| **Leitura (SELECT)** | ✅ Qualquer um (público) |
-| **Inserção (INSERT)** | 🔒 Apenas autenticados |
-| **Atualização (UPDATE)** | 🔒 Apenas autenticados |
-| **Exclusão (DELETE)** | 🔒 Apenas autenticados |
+| Operação                 | Permissão                |
+| ------------------------ | ------------------------ |
+| **Leitura (SELECT)**     | ✅ Qualquer um (público) |
+| **Inserção (INSERT)**    | 🔒 Apenas autenticados   |
+| **Atualização (UPDATE)** | 🔒 Apenas autenticados   |
+| **Exclusão (DELETE)**    | 🔒 Apenas autenticados   |
 
 **Tabelas afetadas:**
+
 - `membros_historico`
 - `consultas`
 - `cadastro`
