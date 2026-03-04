@@ -1,4 +1,4 @@
-# 🚀 Migração Completa: Dados Mockados → Supabase
+ A# 🚀 Migração Completa: Dados Mockados → Supabase
 
 ## 📋 Análise Técnica Inicial
 

@@ -155,7 +155,7 @@ class MembroModel extends Membro {
       funcao: json['funcao']?.toString() ?? '',
       classificacao: json['classificacao']?.toString() ?? '',
       diaSessao:
-          json['dia_sessao']?.toString() ??
+          _normalizarDiaSessao(json['dia_sessao']?.toString()) ??
           '', // Mapeia 'dia_sessao' do Supabase
       primeiroContatoEmergencia: json['primeiro_contato_emergencia'] as String?,
       segundoContatoEmergencia: json['segundo_contato_emergencia'] as String?,
@@ -322,5 +322,36 @@ class MembroModel extends Membro {
       'dataCriacao': dataCriacao?.toIso8601String(),
       'dataUltimaAlteracao': dataUltimaAlteracao?.toIso8601String(),
     };
+  }
+
+  /// Normaliza o valor do dia de sessão que vem do banco de dados (em MAIÚSCULAS)
+  /// para o formato esperado nos dropdowns (Título Case)
+  static String? _normalizarDiaSessao(String? value) {
+    if (value == null || value.isEmpty) return null;
+    
+    final val = value.trim().toUpperCase();
+    
+    // Mapeamento de valores do banco para formato exibição
+    const mapa = {
+      'SEGUNDA-FEIRA': 'Segunda-feira',
+      'SEGUNDA': 'Segunda-feira',
+      'TERÇA-FEIRA': 'Terça-feira',
+      'TERÇA': 'Terça-feira',
+      'TERÇA-FEIRA (OJU)': 'Terça-feira (OJU)',
+      'TERÇA (OJU)': 'Terça-feira (OJU)',
+      'QUARTA-FEIRA': 'Quarta-feira',
+      'QUARTA': 'Quarta-feira',
+      'QUINTA-FEIRA': 'Quinta-feira',
+      'QUINTA': 'Quinta-feira',
+      'SEXTA-FEIRA': 'Sexta-feira',
+      'SEXTA': 'Sexta-feira',
+      'SÁBADO': 'Sábado',
+      'SÁBADO (CENTELHINHA)': 'Sábado (Centelhinha)',
+      'DOMINGO': 'Domingo',
+      'FLUTUANTE': 'Flutuante',
+      'TAREFEIRO': 'Tarefeiro',
+    };
+    
+    return mapa[val];
   }
 }
