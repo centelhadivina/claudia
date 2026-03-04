@@ -152,7 +152,7 @@ class _DetalheMembroDialog extends StatelessWidget {
                     _buildInfo('Observações', membro.observacoesOrixa!),
 
                   const Divider(height: 32),
-                  _buildSecao('NOMES DOS GUIAS ESPIRITUAIS'),
+                  _buildSecao('NOMES DOS GUIAS ESPIRITUAIS QUE DÃO CONSULTA'),
                   _buildInfo('Preto-Velho', membro.nomePr ?? '-'),
                   _buildInfo('Baiano', membro.nomeBai ?? '-'),
                   _buildInfo('Caboclo', membro.nomeCab ?? '-'),

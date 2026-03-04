@@ -395,7 +395,7 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
             ),
 
             const SizedBox(height: 24),
-            _buildSecaoTitulo('NOMES DOS GUIAS ESPIRITUAIS'),
+            _buildSecaoTitulo('NOMES DOS GUIAS ESPIRITUAIS QUE DÃO CONSULTA'),
             _buildCampoTexto(
               controller: nomePrController,
               label: 'Nome do Preto-Velho',
