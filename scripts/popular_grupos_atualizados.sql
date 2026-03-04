@@ -1,16 +1,21 @@
 -- ============================================================================
--- INSERIR GRUPOS E ATIVIDADES
+-- SCRIPT PARA POPULAR DADOS ATUALIZADOS DE GRUPOS NO SUPABASE
 -- ============================================================================
--- Este script insere todos os grupos, grupo-tarefas, ações sociais e 
--- atividades espirituais no sistema
+-- EXECUTE ESTE SCRIPT NO SQL EDITOR DO SUPABASE PARA ATUALIZAR OS DADOS
 -- ============================================================================
 
--- Limpar dados anteriores (opcional - descomente se quiser resetar)
--- DELETE FROM grupos WHERE tipo IN ('atividade_espiritual', 'grupo_trabalho_espiritual', 'grupo_tarefa', 'acao_social', 'cargo_lideranca');
+-- ============================================================================
+-- LIMPAR DADOS ANTIGOS (OPCIONAL - DESCOMENTE SE QUISER RESETAR)
+-- ============================================================================
+
+-- DELETE FROM grupos WHERE tipo IN ('atividade_espiritual', 'grupo_trabalho_espiritual', 'acao_social');
 
 -- ============================================================================
--- ATIVIDADES ESPIRITUAIS
+-- ATUALIZAR ATIVIDADES ESPIRITUAIS EXISTENTES
 -- ============================================================================
+
+-- Deletar e reinserir as atividades espirituais
+DELETE FROM grupos WHERE tipo = 'atividade_espiritual';
 
 INSERT INTO grupos (id, nome, tipo, descricao, ativo) VALUES
 ('esp_encontro_ramatis', 'Encontro dos Amigos de Ramatis', 'atividade_espiritual', 'Encontro mensal dos amigos de Ramatis', true),
@@ -20,8 +25,10 @@ INSERT INTO grupos (id, nome, tipo, descricao, ativo) VALUES
 ('esp_sem_atividade', 'Sem atividade espiritual', 'atividade_espiritual', 'Sem atividade espiritual', true);
 
 -- ============================================================================
--- GRUPOS DE TRABALHO ESPIRITUAL
+-- ATUALIZAR GRUPOS DE TRABALHO ESPIRITUAL
 -- ============================================================================
+
+DELETE FROM grupos WHERE tipo = 'grupo_trabalho_espiritual';
 
 INSERT INTO grupos (id, nome, tipo, descricao, ativo) VALUES
 ('gte_paz', 'Grupo Paz', 'grupo_trabalho_espiritual', 'Grupo de Trabalho Espiritual - Paz', true),
@@ -34,18 +41,10 @@ INSERT INTO grupos (id, nome, tipo, descricao, ativo) VALUES
 ('gte_sem_grupo', 'Sem grupo de trabalho espiritual', 'grupo_trabalho_espiritual', 'Sem grupo de trabalho espiritual', true);
 
 -- ============================================================================
--- GRUPO-TAREFA (Nota C)
+-- ATUALIZAR GRUPOS DE AÇÃO SOCIAL
 -- ============================================================================
 
-INSERT INTO grupos (id, nome, tipo, descricao, ativo) VALUES
-('gt_patrimonio', 'Controle de Patrimônio e Estoque', 'grupo_tarefa', 'Gestão de patrimônio e controle de estoque', true),
-('gt_secretaria', 'Auxílio à Secretaria', 'grupo_tarefa', 'Auxílio às atividades da secretaria', true),
-('gt_vendas', 'Vendas', 'grupo_tarefa', 'Gestão de vendas e produtos', true),
-('gt_comunicacao', 'Comunicação & Marketing', 'grupo_tarefa', 'Comunicação, marketing e divulgação', true);
-
--- ============================================================================
--- GRUPO DE AÇÃO SOCIAL (Nota D)
--- ============================================================================
+DELETE FROM grupos WHERE tipo = 'acao_social' AND nome != 'Coordenação';
 
 INSERT INTO grupos (id, nome, tipo, descricao, ativo) VALUES
 ('gas_captacao', 'Captação de recursos', 'acao_social', 'Captação de recursos', true),
@@ -62,33 +61,41 @@ INSERT INTO grupos (id, nome, tipo, descricao, ativo) VALUES
 ('gas_sem_grupo', 'Sem grupo de ação social', 'acao_social', 'Sem grupo de ação social', true);
 
 -- ============================================================================
--- CARGOS DE LIDERANÇA (Nota L)
--- ============================================================================
-
-INSERT INTO grupos (id, nome, tipo, descricao, ativo) VALUES
-('lid_diretoria', 'Diretoria', 'cargo_lideranca', 'Membro da Diretoria', true),
-('lid_gt', 'Líder de grupo-tarefa', 'cargo_lideranca', 'Líder de Grupo-Tarefa', true),
-('lid_gas', 'Líder de grupo de ação social', 'cargo_lideranca', 'Líder de Grupo de Ação Social', true),
-('lid_coordenador', 'Coordenador de departamento', 'cargo_lideranca', 'Coordenador de departamento (DIJ, DIM, DAS)', true),
-('lid_pai_mae', 'Pai/mãe de terreiro', 'cargo_lideranca', 'Pai ou Mãe de Terreiro', true);
-
--- ============================================================================
 -- VERIFICAR INSERÇÕES
 -- ============================================================================
 
--- Contar grupos por tipo
+-- Ver totais por tipo
 SELECT tipo, COUNT(*) as total
 FROM grupos
 GROUP BY tipo
 ORDER BY tipo;
 
--- Mostrar todos os grupos
+-- Ver todos os grupos atualizados
 SELECT id, nome, tipo, ativo
 FROM grupos
+WHERE tipo IN ('atividade_espiritual', 'grupo_trabalho_espiritual', 'acao_social')
 ORDER BY tipo, nome;
 
 -- ============================================================================
--- COMENTÁRIOS
+-- INSTRUÇÕES DE USO
 -- ============================================================================
 
-COMMENT ON COLUMN grupos.tipo IS 'Tipo do grupo: atividade_espiritual, grupo_trabalho_espiritual, grupo_tarefa, acao_social, cargo_lideranca';
+/*
+1. Abra o Supabase Console (https://app.supabase.com)
+2. Vá em SQL Editor
+3. Cole o conteúdo deste script
+4. Clique em "Run" (ou CTRL+Enter)
+5. Verifique que os dados foram inseridos com os SELECT abaixo
+
+OBSERVAÇÕES:
+- O script deleta os grupos antigos e insere os novos
+- Os cargos de liderança (cargo_lideranca) não foram modificados
+- No campo função, os valores serão atualizados em separate statement
+
+PRÓXIMOS PASSOS:
+- Se precisar atualizar as funções de "Participante" para "Membro",
+  use este script adicional:
+
+  UPDATE usuarios_grupos_acao_social SET funcao = 'Membro' WHERE funcao = 'Participante';
+  UPDATE usuarios_grupos_trabalho_espiritual SET funcao = 'Membro' WHERE funcao = 'Participante';
+*/
