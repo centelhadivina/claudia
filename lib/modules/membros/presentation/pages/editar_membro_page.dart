@@ -278,7 +278,35 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
   late String classificacaoSelecionada;
   late String diaSessaoSelecionado;
 
-  // Datas (apenas exemplo, adicionar todas conforme necessário)
+  // Datas - Histórico (Estágios)
+  DateTime? inicioPrimeiroEstagio;
+  DateTime? desistenciaPrimeiroEstagio;
+  DateTime? primeiroRitoPassagem;
+  DateTime? dataPrimeiroDesligamento;
+  String? justificativa1Selecionada;
+  String? condicao2Selecionada;
+  
+  DateTime? inicioSegundoEstagio;
+  DateTime? desistenciaSegundoEstagio;
+  DateTime? segundoRitoPassagem;
+  DateTime? dataSegundoDesligamento;
+  String? justificativa2Selecionada;
+  String? condicao3Selecionada;
+  
+  DateTime? inicioTerceiroEstagio;
+  DateTime? desistenciaTerceiroEstagio;
+  DateTime? terceiroRitoPassagem;
+  DateTime? dataTerceiroDesligamento;
+  String? justificativa3Selecionada;
+  String? condicao4Selecionada;
+  
+  DateTime? inicioQuartoEstagio;
+  DateTime? desistenciaQuartoEstagio;
+  DateTime? quartoRitoPassagem;
+  DateTime? dataQuartoDesligamento;
+  String? justificativa4Selecionada;
+
+  // Datas - Histórico Espiritual
   DateTime? primeiraCamarinha;
   DateTime? segundaCamarinha;
   DateTime? terceiraCamarinha;
@@ -358,6 +386,161 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
               controller: cargoLiderancaController,
               label: 'Cargo de Liderança (Nota L)',
               icon: Icons.workspace_premium,
+            ),
+
+            const SizedBox(height: 24),
+            _buildSecaoTitulo('HISTÓRICO'),
+
+            // 1º Estágio
+            const Text(
+              '1º Estágio',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.purple),
+            ),
+            _buildCampoData(
+              'Início do 1º estágio',
+              inicioPrimeiroEstagio,
+              (d) => setState(() => inicioPrimeiroEstagio = d),
+            ),
+            _buildCampoData(
+              'Desistência do 1º estágio',
+              desistenciaPrimeiroEstagio,
+              (d) => setState(() => desistenciaPrimeiroEstagio = d),
+            ),
+            _buildCampoData(
+              '1º rito de passagem',
+              primeiroRitoPassagem,
+              (d) => setState(() => primeiroRitoPassagem = d),
+            ),
+            _buildCampoData(
+              '1º desligamento',
+              dataPrimeiroDesligamento,
+              (d) => setState(() => dataPrimeiroDesligamento = d),
+            ),
+            _buildDropdown(
+              value: justificativa1Selecionada,
+              label: 'Justificativa do 1º desligamento',
+              items: MembroConstants.justificativaDesligamentoOpcoes,
+              onChanged: (v) => setState(() => justificativa1Selecionada = v),
+            ),
+            _buildDropdown(
+              value: condicao2Selecionada,
+              label: 'Condições para o 2º estágio',
+              items: MembroConstants.condicaoEstagioOpcoes,
+              onChanged: (v) => setState(() => condicao2Selecionada = v),
+            ),
+
+            const SizedBox(height: 16),
+
+            // 2º Estágio
+            const Text(
+              '2º Estágio',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.purple),
+            ),
+            _buildCampoData(
+              'Início do 2º estágio',
+              inicioSegundoEstagio,
+              (d) => setState(() => inicioSegundoEstagio = d),
+            ),
+            _buildCampoData(
+              'Desistência do 2º estágio',
+              desistenciaSegundoEstagio,
+              (d) => setState(() => desistenciaSegundoEstagio = d),
+            ),
+            _buildCampoData(
+              '2º rito de passagem',
+              segundoRitoPassagem,
+              (d) => setState(() => segundoRitoPassagem = d),
+            ),
+            _buildCampoData(
+              '2º desligamento',
+              dataSegundoDesligamento,
+              (d) => setState(() => dataSegundoDesligamento = d),
+            ),
+            _buildDropdown(
+              value: justificativa2Selecionada,
+              label: 'Justificativa do 2º desligamento',
+              items: MembroConstants.justificativaDesligamentoOpcoes,
+              onChanged: (v) => setState(() => justificativa2Selecionada = v),
+            ),
+            _buildDropdown(
+              value: condicao3Selecionada,
+              label: 'Condições para o 3º estágio',
+              items: MembroConstants.condicaoEstagioOpcoes,
+              onChanged: (v) => setState(() => condicao3Selecionada = v),
+            ),
+
+            const SizedBox(height: 16),
+
+            // 3º Estágio
+            const Text(
+              '3º Estágio',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.purple),
+            ),
+            _buildCampoData(
+              'Início do 3º estágio',
+              inicioTerceiroEstagio,
+              (d) => setState(() => inicioTerceiroEstagio = d),
+            ),
+            _buildCampoData(
+              'Desistência do 3º estágio',
+              desistenciaTerceiroEstagio,
+              (d) => setState(() => desistenciaTerceiroEstagio = d),
+            ),
+            _buildCampoData(
+              '3º rito de passagem',
+              terceiroRitoPassagem,
+              (d) => setState(() => terceiroRitoPassagem = d),
+            ),
+            _buildCampoData(
+              '3º desligamento',
+              dataTerceiroDesligamento,
+              (d) => setState(() => dataTerceiroDesligamento = d),
+            ),
+            _buildDropdown(
+              value: justificativa3Selecionada,
+              label: 'Justificativa do 3º desligamento',
+              items: MembroConstants.justificativaDesligamentoOpcoes,
+              onChanged: (v) => setState(() => justificativa3Selecionada = v),
+            ),
+            _buildDropdown(
+              value: condicao4Selecionada,
+              label: 'Condições para o 4º estágio',
+              items: MembroConstants.condicaoEstagioOpcoes,
+              onChanged: (v) => setState(() => condicao4Selecionada = v),
+            ),
+
+            const SizedBox(height: 16),
+
+            // 4º Estágio
+            const Text(
+              '4º Estágio',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.purple),
+            ),
+            _buildCampoData(
+              'Início do 4º estágio',
+              inicioQuartoEstagio,
+              (d) => setState(() => inicioQuartoEstagio = d),
+            ),
+            _buildCampoData(
+              'Desistência do 4º estágio',
+              desistenciaQuartoEstagio,
+              (d) => setState(() => desistenciaQuartoEstagio = d),
+            ),
+            _buildCampoData(
+              '4º rito de passagem',
+              quartoRitoPassagem,
+              (d) => setState(() => quartoRitoPassagem = d),
+            ),
+            _buildCampoData(
+              '4º desligamento',
+              dataQuartoDesligamento,
+              (d) => setState(() => dataQuartoDesligamento = d),
+            ),
+            _buildDropdown(
+              value: justificativa4Selecionada,
+              label: 'Justificativa do 4º desligamento',
+              items: MembroConstants.justificativaDesligamentoOpcoes,
+              onChanged: (v) => setState(() => justificativa4Selecionada = v),
             ),
 
             const SizedBox(height: 24),
@@ -510,6 +693,35 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     classificacaoSelecionada = m.classificacao;
     diaSessaoSelecionado = m.diaSessao;
 
+    // Histórico (Estágios)
+    inicioPrimeiroEstagio = m.inicioPrimeiroEstagio;
+    desistenciaPrimeiroEstagio = m.desistenciaPrimeiroEstagio;
+    primeiroRitoPassagem = m.primeiroRitoPassagem;
+    dataPrimeiroDesligamento = m.dataPrimeiroDesligamento;
+    justificativa1Selecionada = m.justificativaPrimeiroDesligamento;
+    condicao2Selecionada = m.condicaoSegundoEstagio;
+    
+    inicioSegundoEstagio = m.inicioSegundoEstagio;
+    desistenciaSegundoEstagio = m.desistenciaSegundoEstagio;
+    segundoRitoPassagem = m.segundoRitoPassagem;
+    dataSegundoDesligamento = m.dataSegundoDesligamento;
+    justificativa2Selecionada = m.justificativaSegundoDesligamento;
+    condicao3Selecionada = m.condicaoTerceiroEstagio;
+    
+    inicioTerceiroEstagio = m.inicioTerceiroEstagio;
+    desistenciaTerceiroEstagio = m.desistenciaTerceiroEstagio;
+    terceiroRitoPassagem = m.terceiroRitoPassagem;
+    dataTerceiroDesligamento = m.dataTerceiroDesligamento;
+    justificativa3Selecionada = m.justificativaTerceiroDesligamento;
+    condicao4Selecionada = m.condicaoQuartoEstagio;
+    
+    inicioQuartoEstagio = m.inicioQuartoEstagio;
+    desistenciaQuartoEstagio = m.desistenciaQuartoEstagio;
+    quartoRitoPassagem = m.quartoRitoPassagem;
+    dataQuartoDesligamento = m.dataQuartoDesligamento;
+    justificativa4Selecionada = m.justificativaQuartoDesligamento;
+
+    // Histórico Espiritual
     primeiraCamarinha = m.primeiraCamarinha;
     segundaCamarinha = m.segundaCamarinha;
     terceiraCamarinha = m.terceiraCamarinha;
@@ -561,7 +773,7 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
   }
 
   Widget _buildDropdown({
-    required String value,
+    required String? value,
     required String label,
     required List<String> items,
     required void Function(String?) onChanged,
@@ -586,15 +798,15 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     }
 
     // Verifica se o valor existe na lista (comparação normalizada)
-    String validValue = value;
-    final valorNormalizado = normalizar(value);
+    String validValue = value ?? '';
+    final valorNormalizado = normalizar(validValue);
 
     final itemEncontrado = uniqueItems.firstWhere(
       (item) => normalizar(item) == valorNormalizado,
       orElse: () => '',
     );
 
-    if (itemEncontrado.isEmpty) {
+    if (itemEncontrado.isEmpty && validValue.isNotEmpty) {
       // Não encontrou correspondência exata, usar primeiro item
       validValue = uniqueItems.first;
 
@@ -663,6 +875,34 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
       segundoContatoEmergencia: contato2Controller.text.isNotEmpty
           ? contato2Controller.text
           : null,
+      // Histórico - 1º Estágio
+      inicioPrimeiroEstagio: inicioPrimeiroEstagio,
+      desistenciaPrimeiroEstagio: desistenciaPrimeiroEstagio,
+      primeiroRitoPassagem: primeiroRitoPassagem,
+      dataPrimeiroDesligamento: dataPrimeiroDesligamento,
+      justificativaPrimeiroDesligamento: justificativa1Selecionada,
+      condicaoSegundoEstagio: condicao2Selecionada,
+      // Histórico - 2º Estágio
+      inicioSegundoEstagio: inicioSegundoEstagio,
+      desistenciaSegundoEstagio: desistenciaSegundoEstagio,
+      segundoRitoPassagem: segundoRitoPassagem,
+      dataSegundoDesligamento: dataSegundoDesligamento,
+      justificativaSegundoDesligamento: justificativa2Selecionada,
+      condicaoTerceiroEstagio: condicao3Selecionada,
+      // Histórico - 3º Estágio
+      inicioTerceiroEstagio: inicioTerceiroEstagio,
+      desistenciaTerceiroEstagio: desistenciaTerceiroEstagio,
+      terceiroRitoPassagem: terceiroRitoPassagem,
+      dataTerceiroDesligamento: dataTerceiroDesligamento,
+      justificativaTerceiroDesligamento: justificativa3Selecionada,
+      condicaoQuartoEstagio: condicao4Selecionada,
+      // Histórico - 4º Estágio
+      inicioQuartoEstagio: inicioQuartoEstagio,
+      desistenciaQuartoEstagio: desistenciaQuartoEstagio,
+      quartoRitoPassagem: quartoRitoPassagem,
+      dataQuartoDesligamento: dataQuartoDesligamento,
+      justificativaQuartoDesligamento: justificativa4Selecionada,
+      // Histórico Espiritual
       primeiraCamarinha: primeiraCamarinha,
       segundaCamarinha: segundaCamarinha,
       terceiraCamarinha: terceiraCamarinha,
