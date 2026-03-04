@@ -34,6 +34,9 @@ jobs:
       - name: Build web
         run: flutter build web --release --base-href /claudia/
       
+      - name: Add .nojekyll file
+        run: touch build/web/.nojekyll
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

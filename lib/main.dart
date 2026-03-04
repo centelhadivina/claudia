@@ -1,122 +1,212 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:sistema_ponto/sistema_ponto.dart';
 
-void main() {
+import 'core/di/auth_bloc_binding.dart';
+import 'core/di/injection_container.dart' as di;
+import 'core/services/supabase_service.dart';
+import 'core/theme/app_theme.dart';
+import 'modules/auth/presentation/bloc/auth_bloc.dart';
+import 'modules/auth/presentation/bloc/auth_event.dart';
+import 'modules/auth/presentation/bloc/auth_state.dart';
+import 'modules/auth/presentation/pages/login_page.dart';
+import 'modules/cadastro/presentation/pages/cadastrar_page.dart';
+import 'modules/cadastro/presentation/pages/editar_page.dart';
+import 'modules/cadastro/presentation/pages/excluir_page.dart';
+import 'modules/cadastro/presentation/pages/importar_excel_page.dart';
+import 'modules/cadastro/presentation/pages/importar_pessoas_antigas_page.dart';
+import 'modules/cadastro/presentation/pages/pesquisar_page.dart';
+import 'modules/consultas/presentation/pages/ler_consulta_page.dart';
+import 'modules/consultas/presentation/pages/nova_consulta_page.dart';
+import 'modules/consultas/presentation/pages/pesquisar_consulta_page.dart';
+import 'modules/grupos_acoes_sociais/presentation/pages/gerenciar_grupo_acao_social_page.dart';
+import 'modules/grupos_acoes_sociais/presentation/pages/relatorios_grupo_acao_social_page.dart';
+import 'modules/grupos_tarefas/presentation/pages/gerenciar_grupo_tarefa_page.dart';
+import 'modules/grupos_tarefas/presentation/pages/relatorios_grupo_tarefa_page.dart';
+import 'modules/grupos_trabalhos_espirituais/presentation/pages/gerenciar_grupo_trabalho_espiritual_page.dart';
+import 'modules/grupos_trabalhos_espirituais/presentation/pages/relatorios_grupo_trabalho_espiritual_page.dart';
+import 'modules/home/presentation/pages/home_page.dart';
+import 'modules/membros/presentation/pages/editar_membro_page.dart';
+import 'modules/membros/presentation/pages/importar_membros_antigos_page.dart';
+import 'modules/membros/presentation/pages/incluir_membro_page.dart';
+import 'modules/membros/presentation/pages/pesquisar_membro_page.dart';
+import 'modules/membros/presentation/pages/relatorios_membro_page.dart';
+import 'modules/organizacao/presentation/pages/gerenciar_classificacoes_mediunicas_page.dart';
+import 'modules/organizacao/presentation/pages/gerenciar_dias_sessao_page.dart';
+import 'modules/organizacao/presentation/pages/gerenciar_grupos_page.dart';
+import 'modules/organizacao/presentation/pages/gerenciar_nucleos_page.dart';
+import 'modules/organizacao/presentation/pages/gerenciar_organizacao_page.dart';
+import 'modules/organizacao/presentation/pages/organizacao_centelha_page.dart';
+import 'modules/usuarios_sistema/presentation/pages/gerenciar_usuario_sistema_page.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializar Supabase
+  await SupabaseService.initialize();
+
+  await di.init();
+  AuthBlocBinding.init();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    return BlocProvider(
+      create: (_) => di.sl<AuthBloc>()..add(CheckAuthEvent()),
+      child: GetMaterialApp(
+        title: 'CLAUDIA',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        home: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthAuthenticated) {
+              return const HomePage();
+            }
+            return const LoginPage();
+          },
         ),
+        // Rotas GetX
+        getPages: [
+          GetPage(name: '/cadastrar', page: () => const CadastrarPage()),
+          GetPage(name: '/pesquisar', page: () => const PesquisarPage()),
+          GetPage(name: '/editar', page: () => const EditarPage()),
+          GetPage(name: '/excluir', page: () => const ExcluirPage()),
+          GetPage(
+            name: '/importar-excel',
+            page: () => const ImportarExcelPage(),
+          ),
+          GetPage(
+            name: '/importar-pessoas-antigas',
+            page: () => const ImportarPessoasAntigasPage(),
+          ),
+
+          // Membros
+          GetPage(
+            name: '/membros/importar-antigos',
+            page: () => const ImportarMembrosAntigosPage(),
+          ),
+          GetPage(
+            name: '/membros/incluir',
+            page: () => const IncluirMembroPage(),
+          ),
+          GetPage(
+            name: '/membros/pesquisar',
+            page: () => const PesquisarMembroPage(),
+          ),
+          GetPage(
+            name: '/membros/editar',
+            page: () => const EditarMembroPage(),
+          ),
+          GetPage(
+            name: '/membros/relatorios',
+            page: () => const RelatoriosMembroPage(),
+          ),
+
+          // Consultas
+          GetPage(
+            name: '/consultas/nova',
+            page: () => const NovaConsultaPage(),
+          ),
+          GetPage(
+            name: '/consultas/pesquisar',
+            page: () => const PesquisarConsultaPage(),
+          ),
+          GetPage(name: '/consultas/ler', page: () => const LerConsultaPage()),
+
+          // Grupos Tarefas
+          GetPage(
+            name: '/grupos-tarefas/gerenciar',
+            page: () => const GerenciarGrupoTarefaPage(),
+          ),
+          GetPage(
+            name: '/grupos-tarefas/relatorios',
+            page: () => const RelatoriosGrupoTarefaPage(),
+          ),
+
+          // Grupos Ações Sociais
+          GetPage(
+            name: '/grupos-acoes-sociais/gerenciar',
+            page: () => const GerenciarGrupoAcaoSocialPage(),
+          ),
+          GetPage(
+            name: '/grupos-acoes-sociais/relatorios',
+            page: () => const RelatoriosGrupoAcaoSocialPage(),
+          ),
+
+          // Grupos Trabalhos Espirituais
+          GetPage(
+            name: '/grupos-trabalhos-espirituais/gerenciar',
+            page: () => const GerenciarGrupoTrabalhoEspiritualPage(),
+          ),
+          GetPage(
+            name: '/grupos-trabalhos-espirituais/relatorios',
+            page: () => const RelatoriosGrupoTrabalhoEspiritualPage(),
+          ),
+
+          // Sistema de Ponto
+          GetPage(
+            name: '/sistema-ponto/importar-calendario',
+            page: () => const ImportarCalendarioPage(),
+          ),
+          GetPage(
+            name: '/sistema-ponto/importar-presencas',
+            page: () => const ImportarPresencaPage(),
+          ),
+          GetPage(
+            name: '/sistema-ponto/rankings',
+            page: () => const RankingMensalPage(),
+          ),
+
+          // Usuários Sistema
+          GetPage(
+            name: '/usuarios-sistema/cadastrar',
+            page: () => const GerenciarUsuarioSistemaPage(),
+          ),
+          GetPage(
+            name: '/usuarios-sistema/listar',
+            page: () => const GerenciarUsuarioSistemaPage(),
+          ),
+
+          // Organização
+          GetPage(
+            name: '/organizacao/gerenciar',
+            page: () => const GerenciarOrganizacaoPage(),
+          ),
+          GetPage(
+            name: '/organizacao',
+            page: () => const OrganizacaoCentelhaPage(),
+          ),
+          GetPage(
+            name: '/organizacao/nucleos',
+            page: () => const GerenciarNucleosPage(),
+          ),
+          GetPage(
+            name: '/organizacao/dias-sessao',
+            page: () => const GerenciarDiasSessaoPage(),
+          ),
+          GetPage(
+            name: '/organizacao/grupos-tarefa',
+            page: () => const GerenciarGruposPage(tipo: 'grupo_tarefa'),
+          ),
+          GetPage(
+            name: '/organizacao/grupos-acao-social',
+            page: () => const GerenciarGruposPage(tipo: 'acao_social'),
+          ),
+          GetPage(
+            name: '/organizacao/grupos-trabalho-espiritual',
+            page: () => const GerenciarGruposPage(tipo: 'trabalho_espiritual'),
+          ),
+          GetPage(
+            name: '/organizacao/classificacoes-mediunicas',
+            page: () => const GerenciarClassificacoesMediunicasPage(),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
