@@ -16,12 +16,15 @@ import '../../modules/consultas/data/datasources/consulta_datasource.dart';
 import '../../modules/consultas/data/repositories/consulta_repository.dart';
 import '../../modules/consultas/presentation/controllers/consulta_controller.dart';
 import '../../modules/grupos_acoes_sociais/data/datasources/grupo_acao_social_datasource.dart';
+import '../../modules/grupos_acoes_sociais/data/datasources/grupo_acao_social_supabase_datasource.dart';
 import '../../modules/grupos_acoes_sociais/data/repositories/grupo_acao_social_repository.dart';
 import '../../modules/grupos_acoes_sociais/presentation/controllers/grupo_acao_social_controller.dart';
 import '../../modules/grupos_tarefas/data/datasources/grupo_tarefa_datasource.dart';
+import '../../modules/grupos_tarefas/data/datasources/grupo_tarefa_supabase_datasource.dart';
 import '../../modules/grupos_tarefas/data/repositories/grupo_tarefa_repository.dart';
 import '../../modules/grupos_tarefas/presentation/controllers/grupo_tarefa_controller.dart';
 import '../../modules/grupos_trabalhos_espirituais/data/datasources/grupo_trabalho_espiritual_datasource.dart';
+import '../../modules/grupos_trabalhos_espirituais/data/datasources/grupo_trabalho_espiritual_supabase_datasource.dart';
 import '../../modules/grupos_trabalhos_espirituais/data/repositories/grupo_trabalho_espiritual_repository.dart';
 import '../../modules/grupos_trabalhos_espirituais/presentation/controllers/grupo_trabalho_espiritual_controller.dart';
 import '../../modules/membros/data/datasources/membro_datasource.dart';
@@ -98,9 +101,9 @@ Future<void> init() async {
     () => GrupoTarefaRepositoryImpl(sl()),
   );
 
-  // Datasource
+  // Datasource - SUPABASE (substituiu Mock)
   sl.registerLazySingleton<GrupoTarefaDatasource>(
-    () => GrupoTarefaDatasourceImpl(),
+    () => GrupoTarefaSupabaseDatasource(sl()),
   );
 
   // ============ GRUPOS AÇÕES SOCIAIS ============
@@ -110,9 +113,9 @@ Future<void> init() async {
     () => GrupoAcaoSocialRepositoryImpl(sl()),
   );
 
-  // Datasource
+  // Datasource - SUPABASE (substituiu Mock)
   sl.registerLazySingleton<GrupoAcaoSocialDatasource>(
-    () => GrupoAcaoSocialDatasourceImpl(),
+    () => GrupoAcaoSocialSupabaseDatasource(sl()),
   );
 
   // ============ GRUPOS TRABALHOS ESPIRITUAIS ============
@@ -122,9 +125,9 @@ Future<void> init() async {
     () => GrupoTrabalhoEspiritualRepositoryImpl(sl()),
   );
 
-  // Datasource
+  // Datasource - SUPABASE (substituiu Mock)
   sl.registerLazySingleton<GrupoTrabalhoEspiritualDatasource>(
-    () => GrupoTrabalhoEspiritualDatasourceImpl(),
+    () => GrupoTrabalhoEspiritualSupabaseDatasource(sl()),
   );
 
   // ============ USUÁRIOS SISTEMA ============
