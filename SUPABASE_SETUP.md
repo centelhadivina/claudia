@@ -220,14 +220,103 @@ try {
 }
 ```
 
+## 🚨 Corrigindo Erro "Failed to fetch"
+
+Se você está recebendo erros como:
+
+```
+❌ ClientException: Failed to fetch, uri=https://lnzhgnwwzvpplhaxqbvq.supabase.co/rest/v1/membros_historico
+❌ ClientException: Failed to fetch, uri=https://lnzhgnwwzvpplhaxqbvq.supabase.co/rest/v1/consultas
+❌ ClientException: Failed to fetch, uri=https://lnzhgnwwzvpplhaxqbvq.supabase.co/rest/v1/cadastro
+❌ ClientException: Failed to fetch, uri=https://lnzhgnwwzvpplhaxqbvq.supabase.co/rest/v1/usuarios_sistema
+```
+
+**Causa**: As tabelas estão protegidas por RLS (Row Level Security) mas não têm políticas públicas configuradas.
+
+### Solução Passo a Passo:
+
+#### 1️⃣ Acesse o Supabase Dashboard
+
+Abra no navegador: **https://lnzhgnwwzvpplhaxqbvq.supabase.co**
+
+#### 2️⃣ Abra o SQL Editor
+
+No menu lateral esquerdo, clique no ícone **`</>`** (SQL Editor)
+
+![Menu lateral com SQL Editor destacado]
+
+Ou navegue: **SQL Editor** > **New query**
+
+#### 3️⃣ Cole o Script de Correção
+
+Abra o arquivo do projeto: **`scripts/fix_rls_all_tables.sql`**
+
+Copie TODO o conteúdo e cole no SQL Editor do Supabase.
+
+#### 4️⃣ Execute o Script
+
+- Clique no botão **RUN** (canto inferior direito) ou pressione **Ctrl+Enter** (Windows/Linux) ou **Cmd+Enter** (Mac)
+- Aguarde a mensagem de sucesso ✅
+
+#### 5️⃣ Verifique as Políticas
+
+No final do script, você verá uma tabela mostrando todas as políticas criadas:
+
+```
+schemaname | tablename           | policyname                     | ...
+public     | membros_historico   | membros_historico_read_public  | ...
+public     | consultas           | consultas_read_public          | ...
+public     | cadastro            | cadastro_read_public           | ...
+public     | usuarios_sistema    | usuarios_sistema_read_public   | ...
+```
+
+#### 6️⃣ Reinicie a Aplicação Flutter
+
+No terminal, pare a aplicação (Ctrl+C) e execute novamente:
+
+```bash
+flutter run -d chrome
+```
+
+### ✅ O que o Script Faz
+
+O script configura políticas RLS que permitem:
+
+| Operação                 | Permissão                |
+| ------------------------ | ------------------------ |
+| **Leitura (SELECT)**     | ✅ Qualquer um (público) |
+| **Inserção (INSERT)**    | 🔒 Apenas autenticados   |
+| **Atualização (UPDATE)** | 🔒 Apenas autenticados   |
+| **Exclusão (DELETE)**    | 🔒 Apenas autenticados   |
+
+**Tabelas afetadas:**
+
+- `membros_historico`
+- `consultas`
+- `cadastro`
+- `usuarios_sistema`
+
+### 🔍 Verificando se Funcionou
+
+Após reiniciar, você deve ver no console:
+
+```
+✅ [MEMBROS] X membros carregados do Supabase
+✅ [CADASTRO] X usuários carregados
+```
+
+Ao invés de erros `Failed to fetch`.
+
+---
+
 ## Próximos Passos
 
-1. Obter e configurar a `supabaseAnonKey`
-2. Criar as tabelas necessárias no Supabase
-3. Configurar Row Level Security (RLS) para segurança
-4. Adaptar os datasources existentes para usar o Supabase
-5. Implementar a autenticação real usando Supabase Auth
-6. Testar as operações de CRUD
+1. ✅ ~~Obter e configurar a `supabaseAnonKey`~~ (CONCLUÍDO)
+2. ✅ ~~Criar as tabelas necessárias no Supabase~~ (CONCLUÍDO)
+3. ✅ ~~Configurar Row Level Security (RLS) para segurança~~ (CONCLUÍDO)
+4. ✅ ~~Adaptar os datasources existentes para usar o Supabase~~ (CONCLUÍDO)
+5. ⏳ Implementar a autenticação real usando Supabase Auth
+6. ⏳ Testar todas as operações de CRUD
 
 ## Recursos Úteis
 
