@@ -19,16 +19,20 @@ class LerConsultaPage extends StatefulWidget {
 class _LerConsultaPageState extends State<LerConsultaPage> {
   final consultaController = Get.find<ConsultaController>();
   final numeroController = TextEditingController();
+  final nomeController = TextEditingController();
 
   Consulta? consultaEncontrada;
+  List<Consulta> resultadosPorNome = [];
   bool buscaRealizada = false;
+  bool buscaPorNome = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ler Consulta',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -42,28 +46,62 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Buscar Consulta por Número',
+                      'Buscar Consulta',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
+                    // Toggle por número / por nome
+                    Row(
+                      children: [
+                        ChoiceChip(
+                          label: const Text('Por Número'),
+                          selected: !buscaPorNome,
+                          onSelected: (_) => setState(() {
+                            buscaPorNome = false;
+                            _limpar();
+                          }),
+                        ),
+                        const SizedBox(width: 8),
+                        ChoiceChip(
+                          label: const Text('Por Nome do Consulente'),
+                          selected: buscaPorNome,
+                          onSelected: (_) => setState(() {
+                            buscaPorNome = true;
+                            _limpar();
+                          }),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         Expanded(
-                          child: TextFormField(
-                            controller: numeroController,
-                            decoration: const InputDecoration(
-                              labelText: 'Número da Consulta (5 dígitos)',
-                              prefixIcon: Icon(Icons.numbers),
-                              border: OutlineInputBorder(),
-                              hintText: '00001',
-                            ),
-                            maxLength: 5,
-                            keyboardType: TextInputType.number,
-                            onFieldSubmitted: (_) => _buscar(context),
-                          ),
+                          child: buscaPorNome
+                              ? TextFormField(
+                                  controller: nomeController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Nome do Consulente',
+                                    prefixIcon: Icon(Icons.person_search),
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Digite parte do nome',
+                                  ),
+                                  onFieldSubmitted: (_) => _buscar(context),
+                                )
+                              : TextFormField(
+                                  controller: numeroController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Número da Consulta (5 dígitos)',
+                                    prefixIcon: Icon(Icons.numbers),
+                                    border: OutlineInputBorder(),
+                                    hintText: '00001',
+                                  ),
+                                  maxLength: 5,
+                                  keyboardType: TextInputType.number,
+                                  onFieldSubmitted: (_) => _buscar(context),
+                                ),
                         ),
                         const SizedBox(width: 16),
                         ElevatedButton.icon(
@@ -181,7 +219,21 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
               ),
             ],
 
-            if (buscaRealizada && consultaEncontrada == null) ...[
+            if (buscaRealizada && resultadosPorNome.isNotEmpty) ...
+              resultadosPorNome.map((c) => Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  leading: const Icon(Icons.menu_book, color: Colors.indigo),
+                  title: Text(c.nomeConsulente, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text('Nº ${c.numeroConsulta} • ${_formatarData(c.data)} • ${c.nomeEntidade}'),
+                  onTap: () => setState(() {
+                    consultaEncontrada = c;
+                    resultadosPorNome = [];
+                  }),
+                ),
+              )).toList(),
+
+            if (buscaRealizada && buscaPorNome && resultadosPorNome.isEmpty && consultaEncontrada == null) ...[
               Expanded(
                 child: Center(
                   child: Column(
@@ -214,6 +266,7 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
   @override
   void dispose() {
     numeroController.dispose();
+    nomeController.dispose();
     super.dispose();
   }
 
@@ -244,13 +297,36 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.purple,
+          color: Colors.indigo,
         ),
       ),
     );
   }
 
   Future<void> _buscar(BuildContext context) async {
+    if (buscaPorNome) {
+      final query = nomeController.text.trim().toLowerCase();
+      if (query.isEmpty) return;
+      final resultados = consultaController.consultas
+          .where((c) => c.nomeConsulente.toLowerCase().contains(query))
+          .toList();
+      setState(() {
+        buscaRealizada = true;
+        consultaEncontrada = null;
+        resultadosPorNome = resultados;
+      });
+      if (resultados.isEmpty) {
+        Get.snackbar(
+          'Não encontrado',
+          'Nenhuma consulta com este nome de consulente',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+        );
+      }
+      return;
+    }
+
     final authState = context.read<AuthBloc>().state;
 
     if (authState is! AuthAuthenticated) {
@@ -308,7 +384,9 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
   void _limpar() {
     setState(() {
       numeroController.clear();
+      nomeController.clear();
       consultaEncontrada = null;
+      resultadosPorNome = [];
       buscaRealizada = false;
     });
   }

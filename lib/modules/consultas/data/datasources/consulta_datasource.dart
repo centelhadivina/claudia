@@ -96,6 +96,10 @@ class ConsultaDatasourceImpl implements ConsultaDatasource {
         query = query.eq('cadastro_consulente', cadastroConsulente);
       }
 
+      if (cadastroMedium != null && cadastroMedium.isNotEmpty) {
+        query = query.eq('cadastro_medium', cadastroMedium);
+      }
+
       if (nomeEntidade != null && nomeEntidade.isNotEmpty) {
         query = query.ilike('atendente', '%$nomeEntidade%');
       }

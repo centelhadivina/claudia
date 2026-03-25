@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/consulta_constants.dart';
+import '../../../cadastro/presentation/controllers/cadastro_controller.dart';
 import '../../../../modules/auth/presentation/bloc/auth_bloc.dart';
 import '../../../../modules/auth/presentation/bloc/auth_state.dart';
 import '../../domain/entities/consulta.dart';
@@ -19,9 +20,11 @@ class PesquisarConsultaPage extends StatefulWidget {
 
 class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
   final consultaController = Get.find<ConsultaController>();
+  final cadastroController = Get.find<CadastroController>();
 
   final cadastroConsulenteController = TextEditingController();
   final cadastroMediumController = TextEditingController();
+  final nomeConsulenteController = TextEditingController();
   String? entidadeSelecionada;
 
   List<Consulta> resultados = [];
@@ -33,6 +36,7 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
   void dispose() {
     cadastroConsulenteController.dispose();
     cadastroMediumController.dispose();
+    nomeConsulenteController.dispose();
     super.dispose();
   }
 
@@ -41,18 +45,26 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
       relatorioGerado = false;
     });
 
+    final filtroConsulente = cadastroConsulenteController.text.trim();
+    final filtroMedium = cadastroMediumController.text.trim();
+    final filtroNomeConsulente = nomeConsulenteController.text.trim();
+
     final resultado = await consultaController.pesquisarConsultas(
-      cadastroConsulente: cadastroConsulenteController.text.isNotEmpty
-          ? cadastroConsulenteController.text
-          : null,
-      cadastroMedium: cadastroMediumController.text.isNotEmpty
-          ? cadastroMediumController.text
-          : null,
+      cadastroConsulente: filtroConsulente.isNotEmpty ? filtroConsulente : null,
+      cadastroMedium: filtroMedium.isNotEmpty ? filtroMedium : null,
       nomeEntidade: entidadeSelecionada,
     );
 
+    final consultasFiltradas = filtroNomeConsulente.isEmpty
+        ? resultado
+        : resultado.where((consulta) {
+            return consulta.nomeConsulente.toLowerCase().contains(
+              filtroNomeConsulente.toLowerCase(),
+            );
+          }).toList();
+
     setState(() {
-      resultados = resultado;
+      resultados = consultasFiltradas;
       relatorioGerado = true;
     });
   }
@@ -61,6 +73,7 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
     setState(() {
       cadastroConsulenteController.clear();
       cadastroMediumController.clear();
+      nomeConsulenteController.clear();
       entidadeSelecionada = null;
       resultados = [];
       relatorioGerado = false;
@@ -98,8 +111,16 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Pesquisar Consultas',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-            backgroundColor: Colors.purple,
+            title: const Text(
+              'Pesquisar Consultas',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.indigo,
           ),
           body: Row(
             children: [
@@ -148,6 +169,18 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
                       controller: cadastroMediumController,
                       decoration: const InputDecoration(
                         labelText: 'Cadastro do Médium',
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    TextFormField(
+                      controller: nomeConsulenteController,
+                      decoration: const InputDecoration(
+                        labelText: 'Nome do Consulente',
                         border: OutlineInputBorder(),
                         filled: true,
                         fillColor: Colors.white,
@@ -294,13 +327,34 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
                                                 ),
                                               ),
                                               DataCell(
-                                                Text(consulta.nomeConsulente),
+                                                SizedBox(
+                                                  width: 220,
+                                                  child: Text(
+                                                    consulta.nomeConsulente,
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.visible,
+                                                  ),
+                                                ),
                                               ),
                                               DataCell(
-                                                Text(consulta.nomeMedium),
+                                                SizedBox(
+                                                  width: 220,
+                                                  child: Text(
+                                                    consulta.nomeMedium,
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.visible,
+                                                  ),
+                                                ),
                                               ),
                                               DataCell(
-                                                Text(consulta.nomeEntidade),
+                                                SizedBox(
+                                                  width: 200,
+                                                  child: Text(
+                                                    consulta.nomeEntidade,
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.visible,
+                                                  ),
+                                                ),
                                               ),
                                             ],
                                           );

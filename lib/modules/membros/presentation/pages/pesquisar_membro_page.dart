@@ -241,8 +241,16 @@ class _PesquisarMembroPageState extends State<PesquisarMembroPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pesquisar Dados de Membro',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-        backgroundColor: Colors.purple,
+        title: const Text(
+          'Pesquisar Dados de Membro',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.indigo,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -327,7 +335,7 @@ class _PesquisarMembroPageState extends State<PesquisarMembroPage> {
                           ? 'Digite o número de cadastro'
                           : tipoBusca == 'cpf'
                           ? 'Digite o CPF'
-                          : 'Digite o nome',
+                          : 'Digite parte do nome',
                       prefixIcon: Icon(
                         tipoBusca == 'numero'
                             ? Icons.numbers
@@ -501,23 +509,20 @@ class _PesquisarMembroPageState extends State<PesquisarMembroPage> {
         return;
       }
 
+      final termo = searchController.text.trim();
+
       switch (tipoBusca) {
         case 'numero':
-          final membro = membroController.buscarPorNumero(
-            searchController.text,
-          );
+          final membro = membroController.buscarPorNumero(termo);
           resultados = membro != null ? [membro] : [];
           break;
         case 'cpf':
-          final cpfLimpo = searchController.text.replaceAll(
-            RegExp(r'[^\d]'),
-            '',
-          );
+          final cpfLimpo = termo.replaceAll(RegExp(r'[^\d]'), '');
           final membro = membroController.buscarPorCpf(cpfLimpo);
           resultados = membro != null ? [membro] : [];
           break;
         case 'nome':
-          resultados = membroController.pesquisarPorNome(searchController.text);
+          resultados = membroController.pesquisarPorNome(termo);
           break;
       }
     });

@@ -202,10 +202,20 @@ class _PesquisarPageState extends State<PesquisarPage> {
                           ),
                         ],
                       ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.visibility),
-                        onPressed: () => _verDetalhes(usuario),
-                        tooltip: 'Ver detalhes',
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () => _editarCadastro(usuario),
+                            tooltip: 'Editar cadastro',
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.visibility),
+                            onPressed: () => _verDetalhes(usuario),
+                            tooltip: 'Ver detalhes',
+                          ),
+                        ],
                       ),
                       isThreeLine: true,
                     ),
@@ -306,6 +316,15 @@ class _PesquisarPageState extends State<PesquisarPage> {
         await controller.pesquisar(nome: nomeController.text.trim());
         break;
     }
+  }
+
+  void _editarCadastro(Usuario usuario) {
+    if (usuario.numeroCadastro == null || usuario.numeroCadastro!.isEmpty) {
+      Get.snackbar('Atenção', 'Cadastro sem número para edição');
+      return;
+    }
+
+    Get.toNamed('/editar', arguments: usuario.numeroCadastro);
   }
 
   void _verDetalhes(Usuario usuario) {

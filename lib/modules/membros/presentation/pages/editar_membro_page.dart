@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/membro_constants.dart';
+import '../../../../core/constants/grupo_acao_social_constants.dart';
+import '../../../../core/constants/grupo_tarefa_constants.dart';
 import '../../domain/entities/membro.dart';
 import '../controllers/membro_controller.dart';
 
@@ -299,7 +301,16 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
   late final TextEditingController grupoTarefaController;
   late final TextEditingController acaoSocialController;
   late final TextEditingController cargoLiderancaController;
-  late final TextEditingController nomePrController;
+   late TextEditingController primeiraCamController;
+   late TextEditingController segundaCamController;
+   late TextEditingController terceiraCamController;
+   late TextEditingController coroacaoController;
+
+   late String grupoTarefaSelecionado;
+   late String acaoSocialSelecionado;
+   late String cargoLiderancaSelecionado;
+
+   late final TextEditingController nomePrController;
   late final TextEditingController nomeBaiController;
   late final TextEditingController nomeCabController;
   late final TextEditingController nomeMarController;
@@ -375,20 +386,23 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
 
             const SizedBox(height: 24),
             _buildSecaoTitulo('GRUPOS E ATIVIDADES'),
-            _buildCampoTexto(
-              controller: grupoTarefaController,
+            _buildDropdown(
+              value: grupoTarefaSelecionado,
               label: 'Grupo-Tarefa (Nota C)',
-              icon: Icons.group_work,
+              items: GrupoTarefaConstants.gruposOpcoes,
+              onChanged: (v) => setState(() => grupoTarefaSelecionado = v!),
             ),
-            _buildCampoTexto(
-              controller: acaoSocialController,
+            _buildDropdown(
+              value: acaoSocialSelecionado,
               label: 'Grupo de Ação Social (Nota D)',
-              icon: Icons.volunteer_activism,
+              items: const ['Sem grupo de ação social', ...GrupoAcaoSocialConstants.gruposOpcoes],
+              onChanged: (v) => setState(() => acaoSocialSelecionado = v!),
             ),
-            _buildCampoTexto(
-              controller: cargoLiderancaController,
+            _buildDropdown(
+              value: cargoLiderancaSelecionado,
               label: 'Cargo de Liderança (Nota L)',
-              icon: Icons.workspace_premium,
+              items: MembroConstants.cargoLiderancaOpcoes,
+              onChanged: (v) => setState(() => cargoLiderancaSelecionado = v!),
             ),
 
             const SizedBox(height: 24),
@@ -396,22 +410,42 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
             _buildCampoData(
               '1ª camarinha',
               primeiraCamarinha,
-              (d) => primeiraCamarinha = d,
+              (d) {
+                primeiraCamarinha = d;
+                if (d != null) primeiraCamController.text = _formatarData(d);
+                else primeiraCamController.clear();
+              },
+              primeiraCamController,
             ),
             _buildCampoData(
               '2ª camarinha',
               segundaCamarinha,
-              (d) => segundaCamarinha = d,
+              (d) {
+                segundaCamarinha = d;
+                if (d != null) segundaCamController.text = _formatarData(d);
+                else segundaCamController.clear();
+              },
+              segundaCamController,
             ),
             _buildCampoData(
               '3ª camarinha',
               terceiraCamarinha,
-              (d) => terceiraCamarinha = d,
+              (d) {
+                terceiraCamarinha = d;
+                if (d != null) terceiraCamController.text = _formatarData(d);
+                else terceiraCamController.clear();
+              },
+              terceiraCamController,
             ),
             _buildCampoData(
               'Data da coroação de sacerdote',
               dataCoroacaoSacerdote,
-              (d) => dataCoroacaoSacerdote = d,
+              (d) {
+                dataCoroacaoSacerdote = d;
+                if (d != null) coroacaoController.text = _formatarData(d);
+                else coroacaoController.clear();
+              },
+              coroacaoController,
             ),
 
             const SizedBox(height: 24),
@@ -497,9 +531,10 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     contato1Controller.dispose();
     contato2Controller.dispose();
     observacoesOrixaController.dispose();
-    grupoTarefaController.dispose();
-    acaoSocialController.dispose();
-    cargoLiderancaController.dispose();
+    primeiraCamController.dispose();
+    segundaCamController.dispose();
+    terceiraCamController.dispose();
+    coroacaoController.dispose();
     nomePrController.dispose();
     nomeBaiController.dispose();
     nomeCabController.dispose();
@@ -524,9 +559,19 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     observacoesOrixaController = TextEditingController(
       text: m.observacoesOrixa,
     );
-    grupoTarefaController = TextEditingController(text: m.grupoTarefa);
-    acaoSocialController = TextEditingController(text: m.acaoSocial);
-    cargoLiderancaController = TextEditingController(text: m.cargoLideranca);
+    grupoTarefaSelecionado = GrupoTarefaConstants.gruposOpcoes.contains(m.grupoTarefa)
+        ? m.grupoTarefa ?? GrupoTarefaConstants.gruposOpcoes.last
+        : GrupoTarefaConstants.gruposOpcoes.last;
+    acaoSocialSelecionado = (['Sem grupo de ação social', ...GrupoAcaoSocialConstants.gruposOpcoes]).contains(m.acaoSocial)
+        ? m.acaoSocial ?? 'Sem grupo de ação social'
+        : 'Sem grupo de ação social';
+    cargoLiderancaSelecionado = MembroConstants.cargoLiderancaOpcoes.contains(m.cargoLideranca)
+        ? m.cargoLideranca ?? MembroConstants.cargoLiderancaOpcoes.last
+        : MembroConstants.cargoLiderancaOpcoes.last;
+    primeiraCamController = TextEditingController(text: _formatarData(m.primeiraCamarinha));
+    segundaCamController = TextEditingController(text: _formatarData(m.segundaCamarinha));
+    terceiraCamController = TextEditingController(text: _formatarData(m.terceiraCamarinha));
+    coroacaoController = TextEditingController(text: _formatarData(m.dataCoroacaoSacerdote));
     nomePrController = TextEditingController(text: m.nomePr);
     nomeBaiController = TextEditingController(text: m.nomeBai);
     nomeCabController = TextEditingController(text: m.nomeCab);
@@ -551,12 +596,13 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     String label,
     DateTime? data,
     Function(DateTime?) onSelected,
+    TextEditingController controller,
   ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: TextFormField(
         readOnly: true,
-        controller: TextEditingController(text: _formatarData(data)),
+        controller: controller,
         onTap: () => _selecionarData(context, onSelected),
         decoration: InputDecoration(
           labelText: label,
@@ -713,14 +759,14 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
       observacoesOrixa: observacoesOrixaController.text.isNotEmpty
           ? observacoesOrixaController.text
           : null,
-      grupoTarefa: grupoTarefaController.text.isNotEmpty
-          ? grupoTarefaController.text
+      grupoTarefa: grupoTarefaSelecionado != GrupoTarefaConstants.gruposOpcoes.last
+          ? grupoTarefaSelecionado
           : null,
-      acaoSocial: acaoSocialController.text.isNotEmpty
-          ? acaoSocialController.text
+      acaoSocial: acaoSocialSelecionado != 'Sem grupo de ação social'
+          ? acaoSocialSelecionado
           : null,
-      cargoLideranca: cargoLiderancaController.text.isNotEmpty
-          ? cargoLiderancaController.text
+      cargoLideranca: cargoLiderancaSelecionado != MembroConstants.cargoLiderancaOpcoes.last
+          ? cargoLiderancaSelecionado
           : null,
       nomePr: nomePrController.text.isNotEmpty ? nomePrController.text : null,
       nomeBai: nomeBaiController.text.isNotEmpty

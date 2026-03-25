@@ -43,10 +43,22 @@ class MembroConstants {
     'Terça-feira',
     'Terça-feira (OJU)',
     'Quarta-feira',
+    'Sexta-feira',
     'Sábado',
     'Sábado (Centelhinha)',
     'Flutuante',
     'Tarefeiro',
+  ];
+
+  // Cargo de Liderança
+  static const List<String> cargoLiderancaOpcoes = [
+    'Coordenador de Núcleo',
+    'Coordenador de Grupo',
+    'Líder de Equipe',
+    'Secretário',
+    'Tesoureiro',
+    'Zelador de Patrimônio',
+    'Sem cargo de liderança',
   ];
 
   // Justificativa de Desligamento

@@ -61,6 +61,18 @@ class _EditarPageState extends State<EditarPage> {
   String? usuarioId;
 
   @override
+  void initState() {
+    super.initState();
+    final argNumero = Get.arguments;
+    if (argNumero is String && argNumero.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        numeroController.text = argNumero;
+        _buscarPorNumero();
+      });
+    }
+  }
+
+  @override
   void dispose() {
     numeroController.dispose();
     nomeController.dispose();

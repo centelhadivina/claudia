@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/constants/consulta_constants.dart';
 import '../../../cadastro/presentation/controllers/cadastro_controller.dart';
 import '../../domain/entities/consulta.dart';
 import '../controllers/consulta_controller.dart';
@@ -29,15 +28,25 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
   final nomeMediumController = TextEditingController();
   final descricaoController = TextEditingController();
 
+  late TextEditingController _dataController;
+  late TextEditingController _horaController;
+  late TextEditingController nomeEntidadeController;
+
   DateTime? dataSelecionada;
   TimeOfDay? horaSelecionada;
-  String? entidadeSelecionada;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nova Consulta',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+        title: const Text(
+          'Nova Consulta',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Colors.purple,
       ),
       body: Form(
@@ -64,9 +73,7 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
             // Data
             TextFormField(
               readOnly: true,
-              controller: TextEditingController(
-                text: _formatarData(dataSelecionada),
-              ),
+              controller: _dataController,
               onTap: _selecionarData,
               decoration: InputDecoration(
                 labelText: 'Data *',
@@ -75,7 +82,10 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
                 suffixIcon: dataSelecionada != null
                     ? IconButton(
                         icon: const Icon(Icons.clear),
-                        onPressed: () => setState(() => dataSelecionada = null),
+                        onPressed: () => setState(() {
+                          dataSelecionada = null;
+                          _dataController.clear();
+                        }),
                       )
                     : null,
               ),
@@ -88,9 +98,7 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
             // Hora de início
             TextFormField(
               readOnly: true,
-              controller: TextEditingController(
-                text: _formatarHora(horaSelecionada),
-              ),
+              controller: _horaController,
               onTap: _selecionarHora,
               decoration: InputDecoration(
                 labelText: 'Hora de Início *',
@@ -99,7 +107,10 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
                 suffixIcon: horaSelecionada != null
                     ? IconButton(
                         icon: const Icon(Icons.clear),
-                        onPressed: () => setState(() => horaSelecionada = null),
+                        onPressed: () => setState(() {
+                          horaSelecionada = null;
+                          _horaController.clear();
+                        }),
                       )
                     : null,
               ),
@@ -109,19 +120,16 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
 
             const SizedBox(height: 16),
 
-            // Entidade
-            DropdownButtonFormField<String>(
-              initialValue: entidadeSelecionada,
+            // Nome do Guia/Entidade
+            TextFormField(
+              controller: nomeEntidadeController,
               decoration: const InputDecoration(
-                labelText: 'Nome da Entidade *',
+                labelText: 'Nome do Guia/Entidade *',
                 prefixIcon: Icon(Icons.person_pin),
                 border: OutlineInputBorder(),
               ),
-              items: ConsultaConstants.entidadesOpcoes.map((entidade) {
-                return DropdownMenuItem(value: entidade, child: Text(entidade));
-              }).toList(),
-              onChanged: (v) => setState(() => entidadeSelecionada = v),
-              validator: (v) => v == null ? 'Campo obrigatório' : null,
+              validator: (v) =>
+                  v == null || v.trim().isEmpty ? 'Campo obrigatório' : null,
             ),
 
             const SizedBox(height: 24),
@@ -342,12 +350,18 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
     nomeCambonoController.dispose();
     nomeMediumController.dispose();
     descricaoController.dispose();
+    _dataController.dispose();
+    _horaController.dispose();
+    nomeEntidadeController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    _dataController = TextEditingController();
+    _horaController = TextEditingController();
+    nomeEntidadeController = TextEditingController();
     _carregarNumeroConsulta();
   }
 
@@ -393,8 +407,8 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
   }
 
   Future<void> _carregarNumeroConsulta() async {
-    numeroConsultaController.text = await consultaController
-        .gerarProximoNumero();
+    numeroConsultaController.text =
+        await consultaController.gerarProximoNumero();
   }
 
   String _formatarData(DateTime? data) {
@@ -423,11 +437,6 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
       return;
     }
 
-    if (entidadeSelecionada == null) {
-      Get.snackbar('Atenção', 'Selecione a entidade');
-      return;
-    }
-
     final consulta = Consulta(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       numeroConsulta: numeroConsultaController.text,
@@ -439,7 +448,7 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
       nomeConsulente: nomeConsulenteController.text,
       nomeCambono: nomeCambonoController.text,
       nomeMedium: nomeMediumController.text,
-      nomeEntidade: entidadeSelecionada!,
+      nomeEntidade: nomeEntidadeController.text.trim(),
       descricaoConsulta: descricaoController.text,
       dataCriacao: DateTime.now(),
     );
@@ -461,7 +470,10 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
       locale: const Locale('pt', 'BR'),
     );
     if (data != null) {
-      setState(() => dataSelecionada = data);
+      setState(() {
+        dataSelecionada = data;
+        _dataController.text = _formatarData(data);
+      });
     }
   }
 
@@ -471,7 +483,10 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
       initialTime: TimeOfDay.now(),
     );
     if (hora != null) {
-      setState(() => horaSelecionada = hora);
+      setState(() {
+        horaSelecionada = hora;
+        _horaController.text = _formatarHora(hora);
+      });
     }
   }
 }

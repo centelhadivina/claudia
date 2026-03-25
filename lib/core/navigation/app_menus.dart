@@ -10,17 +10,12 @@ class AppMenus {
         const MenuItem(
           title: 'Cadastrar',
           icon: 'add_circle',
-          route: '/cadastros/cadastrar',
+          route: '/cadastrar',
         ),
         const MenuItem(
           title: 'Pesquisar Cadastro',
           icon: 'search',
-          route: '/cadastros/pesquisar',
-        ),
-        const MenuItem(
-          title: 'Editar Cadastro',
-          icon: 'edit',
-          route: '/cadastros/editar',
+          route: '/pesquisar',
         ),
         const MenuItem(
           title: 'Importar Sistema Antigo',
@@ -31,7 +26,7 @@ class AppMenus {
         const MenuItem(
           title: 'Excluir Cadastro',
           icon: 'delete',
-          route: '/cadastros/excluir',
+          route: '/excluir',
           nivelRequerido: NivelAcesso.nivel3,
         ),
       ],
@@ -50,11 +45,6 @@ class AppMenus {
           title: 'Pesquisar Dados de Membro',
           icon: 'person_search',
           route: '/membros/pesquisar',
-        ),
-        const MenuItem(
-          title: 'Editar Dados de Membro',
-          icon: 'edit',
-          route: '/membros/editar',
         ),
         const MenuItem(
           title: 'Importar Histórico Antigo',
