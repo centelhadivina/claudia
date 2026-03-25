@@ -2,12 +2,12 @@ import '../models/grupo_tarefa_membro_model.dart';
 
 /// Datasource para operações com grupos-tarefas
 abstract class GrupoTarefaDatasource {
-  void adicionar(GrupoTarefaMembroModel membro);
-  void atualizar(GrupoTarefaMembroModel membro);
-  List<GrupoTarefaMembroModel> filtrar({String? grupoTarefa, String? funcao});
-  GrupoTarefaMembroModel? getPorCadastro(String numeroCadastro);
-  List<GrupoTarefaMembroModel> getTodos();
-  void remover(String numeroCadastro);
+  Future<void> adicionar(GrupoTarefaMembroModel membro);
+  Future<void> atualizar(GrupoTarefaMembroModel membro);
+  Future<List<GrupoTarefaMembroModel>> filtrar({String? grupoTarefa, String? funcao});
+  Future<GrupoTarefaMembroModel?> getPorCadastro(String numeroCadastro);
+  Future<List<GrupoTarefaMembroModel>> getTodos();
+  Future<void> remover(String numeroCadastro);
 }
 
 /// Implementação mock do datasource
@@ -34,12 +34,12 @@ class GrupoTarefaDatasourceImpl implements GrupoTarefaDatasource {
   ];
 
   @override
-  void adicionar(GrupoTarefaMembroModel membro) {
+  Future<void> adicionar(GrupoTarefaMembroModel membro) async {
     _membros.add(membro);
   }
 
   @override
-  void atualizar(GrupoTarefaMembroModel membro) {
+  Future<void> atualizar(GrupoTarefaMembroModel membro) async {
     final index = _membros.indexWhere(
       (m) => m.numeroCadastro == membro.numeroCadastro,
     );
@@ -49,7 +49,7 @@ class GrupoTarefaDatasourceImpl implements GrupoTarefaDatasource {
   }
 
   @override
-  List<GrupoTarefaMembroModel> filtrar({String? grupoTarefa, String? funcao}) {
+  Future<List<GrupoTarefaMembroModel>> filtrar({String? grupoTarefa, String? funcao}) async {
     var resultado = List<GrupoTarefaMembroModel>.from(_membros);
 
     if (grupoTarefa != null && grupoTarefa.isNotEmpty) {
@@ -64,7 +64,7 @@ class GrupoTarefaDatasourceImpl implements GrupoTarefaDatasource {
   }
 
   @override
-  GrupoTarefaMembroModel? getPorCadastro(String numeroCadastro) {
+  Future<GrupoTarefaMembroModel?> getPorCadastro(String numeroCadastro) async {
     try {
       return _membros.firstWhere((m) => m.numeroCadastro == numeroCadastro);
     } catch (e) {
@@ -73,10 +73,10 @@ class GrupoTarefaDatasourceImpl implements GrupoTarefaDatasource {
   }
 
   @override
-  List<GrupoTarefaMembroModel> getTodos() => List.from(_membros);
+  Future<List<GrupoTarefaMembroModel>> getTodos() async => List.from(_membros);
 
   @override
-  void remover(String numeroCadastro) {
+  Future<void> remover(String numeroCadastro) async {
     _membros.removeWhere((m) => m.numeroCadastro == numeroCadastro);
   }
 }

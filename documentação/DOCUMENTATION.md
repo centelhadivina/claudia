@@ -14,6 +14,7 @@ lib/
 │   ├── di/                        # Dependency Injection
 │   │   └── injection_container.dart
 │   ├── error/                     # Gestão de erros
+<<<<<<< Updated upstream
 │   │   └── failures.dart
 │   └── utils/                     # Utilitários
 │       └── either.dart
@@ -233,3 +234,124 @@ Este projeto é privado e confidencial.
 ---
 
 **Desenvolvido com ❤️ usando Flutter**
+=======
+# Documentação Consolidada do Projeto
+
+## Escopo
+
+Este documento centraliza a visão técnica e operacional do Centelha Claudia, substituindo descrições antigas focadas apenas no módulo de cadastro.
+
+## Contexto do sistema
+
+Aplicação Flutter modular para gestão interna, com backend em Supabase e organização por domínios de negócio.
+
+Domínios atualmente presentes:
+
+- auth
+- cadastro
+- consultas
+- cursos
+- grupos_acoes_sociais
+- grupos_tarefas
+- grupos_trabalhos_espirituais
+- home
+- membros
+- organizacao
+- sacramentos
+- usuarios_sistema
+
+## Arquitetura resumida
+
+Padrão predominante:
+
+- presentation: interface, fluxo de estado e navegação
+- domain: regras, contratos e entidades
+- data: fontes de dados, mapeamento e integração
+
+Regras gerais:
+
+- domínio não depende de detalhes de infraestrutura
+- data implementa contratos de domínio
+- UI não deve acessar infraestrutura diretamente
+
+## Setup essencial
+
+1. Instalar dependências:
+
+```bash
+flutter pub get
+```
+
+2. Configurar Supabase:
+
+- Ajustar credenciais em lib/core/constants/supabase_constants.dart
+- Seguir SUPABASE_SETUP.md
+
+3. Executar aplicação:
+
+```bash
+flutter run -d chrome
+```
+
+## Guias ativos por tema
+
+Arquitetura e expansão:
+
+- ARCHITECTURE.md
+- EXPANSION_GUIDE.md
+- ARQUITETURA_DADOS_AVALIACOES.md
+
+Supabase e dados:
+
+- SUPABASE_SETUP.md
+- GUIA_CRIAR_TABELAS_SUPABASE.md
+- GUIA_USO_DATASOURCES.md
+
+Fluxos funcionais:
+
+- SISTEMA_AUTENTICACAO.md
+- SISTEMA_IMPORTACAO_PRESENCAS.md
+- GUIA_USO_INTERFACES.md
+- INTERFACES_LANCAMENTO_NOTAS.md
+- GUIA_INTEGRACAO_MENU.md
+
+Importações e manutenção:
+
+- IMPORTAR_CADASTROS_DO_JSON.md
+- IMPORTAR_MEMBROS_ANTIGOS.md
+- IMPORTAR_CURSOS.md
+- GUIA_RAPIDO_IMPORTACAO_PRESENCAS.md
+- LIMPAR_E_REIMPORTAR.md
+
+Implantações e referências:
+
+- DEPLOY_GITHUB_PAGES.md
+- CAMPOS_USUARIO.md
+- RELATORIO_BUGS_MELHORIAS.md
+
+## Decisões de documentação aplicadas
+
+- Removidas duplicatas textuais e arquivos copy.
+- Removidas versões duplicadas de setup/arquitetura dentro de documentação.
+- Removidos documentos de status concluído e progresso temporal já encerrado.
+- Mantidos guias operacionais que ainda agregam execução e manutenção.
+
+## Critérios para novos documentos
+
+Criar novo arquivo somente quando houver:
+
+- novo subsistema com operação independente
+- necessidade de runbook recorrente
+- decisão arquitetural que não cabe em ARCHITECTURE.md
+
+Caso contrário, atualizar os guias já existentes para evitar fragmentação.
+
+## Melhorias prioritárias
+
+1. Estabelecer padrão mínimo de testes por módulo crítico.
+2. Definir política de versionamento para scripts SQL e migrações.
+3. Padronizar observabilidade de erros e eventos de negócio.
+4. Fechar lacunas de camadas em módulos ainda incompletos.
+5. Manter governança documental trimestral para evitar nova obsolescência.
+  Future<List<UsuarioModel>> getUsuarios() async {
+>>>>>>> Stashed changes

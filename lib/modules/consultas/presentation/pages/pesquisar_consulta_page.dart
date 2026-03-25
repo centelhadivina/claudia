@@ -98,7 +98,7 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Pesquisar Consultas'),
+            title: const Text('Pesquisar Consultas',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
             backgroundColor: Colors.purple,
           ),
           body: Row(

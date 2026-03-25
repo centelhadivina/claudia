@@ -4,9 +4,6 @@ import '../models/grupo_trabalho_espiritual_membro_model.dart';
 
 /// Interface do repositório
 abstract class GrupoTrabalhoEspiritualRepository {
-  Future<List<String>> carregarAtividadesDisponiveis();
-  Future<List<String>> carregarFuncoesDisponiveis();
-  Future<List<String>> carregarGruposEspirituaisDisponiveis();
   Future<List<GrupoTrabalhoEspiritualMembro>> filtrar({
     String? atividadeEspiritual,
     String? grupoTrabalho,
@@ -19,26 +16,10 @@ abstract class GrupoTrabalhoEspiritualRepository {
 }
 
 /// Implementação do repositório
-class GrupoTrabalhoEspiritualRepositoryImpl
-    implements GrupoTrabalhoEspiritualRepository {
+class GrupoTrabalhoEspiritualRepositoryImpl implements GrupoTrabalhoEspiritualRepository {
   final GrupoTrabalhoEspiritualDatasource datasource;
 
   GrupoTrabalhoEspiritualRepositoryImpl(this.datasource);
-
-  @override
-  Future<List<String>> carregarAtividadesDisponiveis() async {
-    return await datasource.carregarAtividadesDisponiveis();
-  }
-
-  @override
-  Future<List<String>> carregarFuncoesDisponiveis() async {
-    return await datasource.carregarFuncoesDisponiveis();
-  }
-
-  @override
-  Future<List<String>> carregarGruposEspirituaisDisponiveis() async {
-    return await datasource.carregarGruposEspirituaisDisponiveis();
-  }
 
   @override
   Future<List<GrupoTrabalhoEspiritualMembro>> filtrar({
@@ -54,9 +35,7 @@ class GrupoTrabalhoEspiritualRepositoryImpl
   }
 
   @override
-  Future<GrupoTrabalhoEspiritualMembro?> getPorCadastro(
-    String numeroCadastro,
-  ) async {
+  Future<GrupoTrabalhoEspiritualMembro?> getPorCadastro(String numeroCadastro) async {
     return await datasource.getPorCadastro(numeroCadastro);
   }
 

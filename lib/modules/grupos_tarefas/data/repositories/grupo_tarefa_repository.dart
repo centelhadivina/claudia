@@ -4,12 +4,12 @@ import '../models/grupo_tarefa_membro_model.dart';
 
 /// Repository para operações com grupos-tarefas
 abstract class GrupoTarefaRepository {
-  void adicionar(GrupoTarefaMembro membro);
-  void atualizar(GrupoTarefaMembro membro);
-  List<GrupoTarefaMembro> filtrar({String? grupoTarefa, String? funcao});
-  GrupoTarefaMembro? getPorCadastro(String numeroCadastro);
-  List<GrupoTarefaMembro> getTodos();
-  void remover(String numeroCadastro);
+  Future<void> adicionar(GrupoTarefaMembro membro);
+  Future<void> atualizar(GrupoTarefaMembro membro);
+  Future<List<GrupoTarefaMembro>> filtrar({String? grupoTarefa, String? funcao});
+  Future<GrupoTarefaMembro?> getPorCadastro(String numeroCadastro);
+  Future<List<GrupoTarefaMembro>> getTodos();
+  Future<void> remover(String numeroCadastro);
 }
 
 /// Implementação do repository
@@ -19,34 +19,34 @@ class GrupoTarefaRepositoryImpl implements GrupoTarefaRepository {
   GrupoTarefaRepositoryImpl(this.datasource);
 
   @override
-  void adicionar(GrupoTarefaMembro membro) {
+  Future<void> adicionar(GrupoTarefaMembro membro) async {
     final model = GrupoTarefaMembroModel.fromEntity(membro);
-    datasource.adicionar(model);
+    await datasource.adicionar(model);
   }
 
   @override
-  void atualizar(GrupoTarefaMembro membro) {
+  Future<void> atualizar(GrupoTarefaMembro membro) async {
     final model = GrupoTarefaMembroModel.fromEntity(membro);
-    datasource.atualizar(model);
+    await datasource.atualizar(model);
   }
 
   @override
-  List<GrupoTarefaMembro> filtrar({String? grupoTarefa, String? funcao}) {
-    return datasource.filtrar(grupoTarefa: grupoTarefa, funcao: funcao);
+  Future<List<GrupoTarefaMembro>> filtrar({String? grupoTarefa, String? funcao}) async {
+    return await datasource.filtrar(grupoTarefa: grupoTarefa, funcao: funcao);
   }
 
   @override
-  GrupoTarefaMembro? getPorCadastro(String numeroCadastro) {
-    return datasource.getPorCadastro(numeroCadastro);
+  Future<GrupoTarefaMembro?> getPorCadastro(String numeroCadastro) async {
+    return await datasource.getPorCadastro(numeroCadastro);
   }
 
   @override
-  List<GrupoTarefaMembro> getTodos() {
-    return datasource.getTodos();
+  Future<List<GrupoTarefaMembro>> getTodos() async {
+    return await datasource.getTodos();
   }
 
   @override
-  void remover(String numeroCadastro) {
-    datasource.remover(numeroCadastro);
+  Future<void> remover(String numeroCadastro) async {
+    await datasource.remover(numeroCadastro);
   }
 }

@@ -2,29 +2,17 @@
 class GrupoTrabalhoEspiritualConstants {
   /// 5 atividades espirituais disponíveis
   static const List<String> atividadesOpcoes = [
-    'Encontro dos Amigos de Ramatis',
-    'Corrente de Oração e Renovação (COR)',
-    'Sessões de Antigoécia',
-    'Monitoria Infantil',
-    'Sem atividade espiritual',
-  ];
-
-  /// 8 grupos de trabalho espiritual disponíveis
-  static const List<String> gruposTrabalhoOpcoes = [
-    'Grupo Paz',
-    'Grupo Luz',
-    'Grupo Amor',
-    'Grupo Fé',
-    'Grupo Força',
-    'Grupo Esperança',
-    'Grupo União',
-    'Sem grupo de trabalho espiritual',
+    'Evangelização',
+    'Passes',
+    'Desobsessão',
+    'Atendimento fraterno',
+    'Estudos doutrinários',
   ];
 
   /// 2 funções disponíveis nos grupos de trabalhos espirituais
   static const List<String> funcoesOpcoes = [
     'Líder',
-    'Membro',
+    'Participante',
   ];
 
   /// Mapa de grupos de trabalho por atividade espiritual

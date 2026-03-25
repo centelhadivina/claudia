@@ -8,18 +8,12 @@ import '../../domain/entities/grupo_trabalho_espiritual_membro.dart';
 class GrupoTrabalhoEspiritualController extends GetxController {
   final GrupoTrabalhoEspiritualRepository repository;
 
-  final RxList<GrupoTrabalhoEspiritualMembro> membros =
-      <GrupoTrabalhoEspiritualMembro>[].obs;
-  final RxList<String> atividadesDisponiveis = <String>[].obs;
-  final RxList<String> gruposEspirituaisDisponiveis = <String>[].obs;
-  final RxList<String> funcoesDisponiveis = <String>[].obs;
+  final RxList<GrupoTrabalhoEspiritualMembro> membros = <GrupoTrabalhoEspiritualMembro>[].obs;
 
   final RxBool isLoading = false.obs;
   GrupoTrabalhoEspiritualController(this.repository);
 
-  Future<GrupoTrabalhoEspiritualMembro?> buscarPorCadastro(
-    String numeroCadastro,
-  ) async {
+  Future<GrupoTrabalhoEspiritualMembro?> buscarPorCadastro(String numeroCadastro) async {
     return await repository.getPorCadastro(numeroCadastro);
   }
 
@@ -40,15 +34,11 @@ class GrupoTrabalhoEspiritualController extends GetxController {
     var resultado = List<GrupoTrabalhoEspiritualMembro>.from(membros);
 
     if (atividadeEspiritual != null) {
-      resultado = resultado
-          .where((m) => m.atividadeEspiritual == atividadeEspiritual)
-          .toList();
+      resultado = resultado.where((m) => m.atividadeEspiritual == atividadeEspiritual).toList();
     }
 
     if (grupoTrabalho != null) {
-      resultado = resultado
-          .where((m) => m.grupoTrabalho == grupoTrabalho)
-          .toList();
+      resultado = resultado.where((m) => m.grupoTrabalho == grupoTrabalho).toList();
     }
 
     if (funcao != null) {
@@ -62,7 +52,6 @@ class GrupoTrabalhoEspiritualController extends GetxController {
   void onInit() {
     super.onInit();
     carregarTodos();
-    _carregarDadosDinamicos();
   }
 
   Future<void> remover(String numeroCadastro) async {
@@ -89,10 +78,7 @@ class GrupoTrabalhoEspiritualController extends GetxController {
   Future<void> salvar(GrupoTrabalhoEspiritualMembro membro) async {
     try {
       // Validar correspondência entre atividade e grupo
-      if (!validarGrupoAtividade(
-        membro.atividadeEspiritual,
-        membro.grupoTrabalho,
-      )) {
+      if (!validarGrupoAtividade(membro.atividadeEspiritual, membro.grupoTrabalho)) {
         Get.snackbar(
           'Erro de Validação',
           'O grupo "${membro.grupoTrabalho}" não pertence à atividade "${membro.atividadeEspiritual}"',
@@ -129,21 +115,5 @@ class GrupoTrabalhoEspiritualController extends GetxController {
       atividadeEspiritual,
       grupoTrabalho,
     );
-  }
-
-  Future<void> _carregarDadosDinamicos() async {
-    try {
-      atividadesDisponiveis.value = await repository
-          .carregarAtividadesDisponiveis();
-      gruposEspirituaisDisponiveis.value = await repository
-          .carregarGruposEspirituaisDisponiveis();
-      funcoesDisponiveis.value = await repository.carregarFuncoesDisponiveis();
-    } catch (e) {
-      print('Erro ao carregar dados dinâmicos: $e');
-      // Fallback to empty lists
-      atividadesDisponiveis.value = [];
-      gruposEspirituaisDisponiveis.value = [];
-      funcoesDisponiveis.value = [];
-    }
   }
 }

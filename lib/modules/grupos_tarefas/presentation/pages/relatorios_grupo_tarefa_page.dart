@@ -28,7 +28,7 @@ class _RelatoriosGrupoTarefaPageState extends State<RelatoriosGrupoTarefaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Relatórios de Grupos-Tarefas'),
+        title: const Text('Relatórios de Grupos-Tarefas',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.purple,
       ),
       body: Row(
@@ -313,12 +313,13 @@ class _RelatoriosGrupoTarefaPageState extends State<RelatoriosGrupoTarefaPage> {
     return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
   }
 
-  void _gerarRelatorio() {
+  void _gerarRelatorio() async {
+    final resultado = await grupoTarefaController.filtrar(
+      grupoTarefa: grupoTarefaFiltro,
+      funcao: funcaoFiltro,
+    );
     setState(() {
-      resultados = grupoTarefaController.filtrar(
-        grupoTarefa: grupoTarefaFiltro,
-        funcao: funcaoFiltro,
-      );
+      resultados = resultado;
       relatorioGerado = true;
     });
   }

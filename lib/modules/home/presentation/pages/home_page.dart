@@ -109,7 +109,7 @@ class HomePage extends StatelessWidget {
                               children: [
                                 // Logo
                                 Image.asset(
-                                  'assets/images/centelha_new.png',
+                                  'assets/images/claudia.jpeg',
                                   width: 120,
                                   height: 120,
                                   fit: BoxFit.contain,
@@ -280,11 +280,21 @@ class _AppDrawer extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                Image.asset(
-                  'assets/images/centelha_new.png',
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.contain,
+                Row(
+                  children: [
+                    Image.asset(
+                      'assets/images/centelha.png',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.contain,
+                    ),
+                    Image.asset(
+                            'assets/images/claudia.jpeg',
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.contain,
+                          ),
+                  ],
                 ),
               ],
             ),

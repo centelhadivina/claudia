@@ -3,8 +3,8 @@ import '../models/membro_model.dart';
 
 /// Datasource para operações com membros (mock)
 abstract class MembroDatasource {
-  void adicionarMembro(MembroModel membro);
-  void atualizarMembro(MembroModel membro);
+  Future<void> adicionarMembro(MembroModel membro);
+  Future<void> atualizarMembro(MembroModel membro);
 
   /// Método para garantir que dados estão carregados (para datasources assíncronos)
   Future<void> garantirDadosCarregados() async {}
@@ -13,7 +13,7 @@ abstract class MembroDatasource {
   List<MembroModel> getMembros();
   List<MembroModel> pesquisarPorNome(String nome);
 
-  void removerMembro(String numero);
+  Future<void> removerMembro(String numero);
 }
 
 /// Implementação mock do datasource
@@ -98,12 +98,12 @@ class MembroDatasourceImpl implements MembroDatasource {
   ];
 
   @override
-  void adicionarMembro(MembroModel membro) {
+  Future<void> adicionarMembro(MembroModel membro) async {
     _membros.add(membro);
   }
 
   @override
-  void atualizarMembro(MembroModel membro) {
+  Future<void> atualizarMembro(MembroModel membro) async {
     final index = _membros.indexWhere((m) => m.id == membro.id);
     if (index != -1) {
       _membros[index] = membro;
@@ -146,7 +146,7 @@ class MembroDatasourceImpl implements MembroDatasource {
   }
 
   @override
-  void removerMembro(String numero) {
+  Future<void> removerMembro(String numero) async {
     _membros.removeWhere((m) => m.numeroCadastro == numero);
   }
 }

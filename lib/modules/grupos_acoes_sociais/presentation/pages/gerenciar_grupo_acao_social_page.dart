@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/constants/grupo_acao_social_constants.dart';
 import '../../../membros/presentation/controllers/membro_controller.dart';
 import '../../domain/entities/grupo_acao_social_membro.dart';
 import '../controllers/grupo_acao_social_controller.dart';
@@ -235,14 +236,14 @@ class _GerenciarGrupoAcaoSocialPageState
                             labelText: 'Grupo de Ação Social *',
                             border: OutlineInputBorder(),
                           ),
-                          items: grupoAcaoSocialController.gruposDisponiveis
-                              .map((grupo) {
-                                return DropdownMenuItem<String>(
-                                  value: grupo,
-                                  child: Text(grupo),
-                                );
-                              })
-                              .toList(),
+                          items: GrupoAcaoSocialConstants.gruposOpcoes.map((
+                            grupo,
+                          ) {
+                            return DropdownMenuItem<String>(
+                              value: grupo,
+                              child: Text(grupo),
+                            );
+                          }).toList(),
                           onChanged: (v) =>
                               setState(() => grupoAcaoSocialSelecionado = v),
                         ),
@@ -253,14 +254,14 @@ class _GerenciarGrupoAcaoSocialPageState
                             labelText: 'Função no Grupo *',
                             border: OutlineInputBorder(),
                           ),
-                          items: grupoAcaoSocialController.funcoesDisponiveis
-                              .map((funcao) {
-                                return DropdownMenuItem<String>(
-                                  value: funcao,
-                                  child: Text(funcao),
-                                );
-                              })
-                              .toList(),
+                          items: GrupoAcaoSocialConstants.funcoesOpcoes.map((
+                            funcao,
+                          ) {
+                            return DropdownMenuItem<String>(
+                              value: funcao,
+                              child: Text(funcao),
+                            );
+                          }).toList(),
                           onChanged: (v) =>
                               setState(() => funcaoSelecionada = v),
                         ),

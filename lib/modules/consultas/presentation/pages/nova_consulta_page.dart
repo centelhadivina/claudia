@@ -37,7 +37,7 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nova Consulta'),
+        title: const Text('Nova Consulta',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.purple,
       ),
       body: Form(

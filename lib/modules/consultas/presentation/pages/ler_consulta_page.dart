@@ -27,7 +27,7 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ler Consulta'),
+        title: const Text('Ler Consulta',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.purple,
       ),
       body: Padding(

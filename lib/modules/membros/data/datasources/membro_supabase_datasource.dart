@@ -17,51 +17,50 @@ class MembroSupabaseDatasource implements MembroDatasource {
   MembroSupabaseDatasource(this._supabaseService);
 
   @override
-  void adicionarMembro(MembroModel membro) {
-    // Operação assíncrona em background
-    var data = membro.toJson();
+  Future<void> adicionarMembro(MembroModel membro) async {
+    // Operação assíncrona
+    final data = membro.toJson();
     data.remove('id');
     data.remove('data_criacao');
     data.remove('data_ultima_alteracao');
-    data = _convertToSnakeCase(data);
 
-    _garantirCacheCarregado()
-        .then((_) {
-          return _supabaseService.client.from('membros_historico').insert(data);
-        })
-        .then((_) {
-          _cache.add(membro);
-        })
-        .catchError((error) {
-          throw ServerException('Erro ao adicionar membro: $error');
-        });
+    try {
+      print('📤 [MEMBROS DS] Adicionando membro ${membro.numeroCadastro}...');
+      await _garantirCacheCarregado();
+      await _supabaseService.client.from('membros_historico').insert(data);
+      _cache.add(membro);
+      print('✅ [MEMBROS DS] Membro adicionado com sucesso');
+    } catch (error) {
+      print('❌ [MEMBROS DS] Erro ao adicionar: $error');
+      throw ServerException('Erro ao adicionar membro: $error');
+    }
   }
 
   @override
-  void atualizarMembro(MembroModel membro) {
+  Future<void> atualizarMembro(MembroModel membro) async {
     if (membro.id == null) {
       throw ServerException('ID é obrigatório para atualização');
     }
 
-    var data = membro.toJson();
-    data.remove('id');
+    final data = membro.toJson();
     data.remove('data_criacao');
-    data.remove('data_ultima_alteracao');
-    data = _convertToSnakeCase(data);
 
-    _supabaseService.client
-        .from('membros_historico')
-        .update(data)
-        .eq('id', membro.id!)
-        .then((_) {
-          final index = _cache.indexWhere((m) => m.id == membro.id);
-          if (index != -1) {
-            _cache[index] = membro;
-          }
-        })
-        .catchError((error) {
-          throw ServerException('Erro ao atualizar membro: $error');
-        });
+    try {
+      print('📤 [MEMBROS DS] Atualizando membro ${membro.numeroCadastro}...');
+      await _supabaseService.client
+          .from('membros_historico')
+          .update(data)
+          .eq('id', membro.id!);
+      
+      final index = _cache.indexWhere((m) => m.id == membro.id);
+      if (index != -1) {
+        _cache[index] = membro;
+      }
+      print('✅ [MEMBROS DS] Membro atualizado com sucesso');
+    } catch (error) {
+      print('❌ [MEMBROS DS] Erro ao atualizar: $error');
+      throw ServerException('Erro ao atualizar membro: $error');
+    }
   }
 
   @override
@@ -119,17 +118,19 @@ class MembroSupabaseDatasource implements MembroDatasource {
   }
 
   @override
-  void removerMembro(String numero) {
-    _supabaseService.client
-        .from('membros_historico')
-        .delete()
-        .eq('cadastro', numero)
-        .then((_) {
-          _cache.removeWhere((m) => m.numeroCadastro == numero);
-        })
-        .catchError((error) {
-          throw ServerException('Erro ao remover membro: $error');
-        });
+  Future<void> removerMembro(String numero) async {
+    try {
+      print('🗑️  [MEMBROS DS] Removendo membro $numero...');
+      await _supabaseService.client
+          .from('membros_historico')
+          .delete()
+          .eq('cadastro', numero);
+      _cache.removeWhere((m) => m.numeroCadastro == numero);
+      print('✅ [MEMBROS DS] Membro removido com sucesso');
+    } catch (error) {
+      print('❌ [MEMBROS DS] Erro ao remover: $error');
+      throw ServerException('Erro ao remover membro: $error');
+    }
   }
 
   /// Carrega cache inicial
@@ -161,34 +162,5 @@ class MembroSupabaseDatasource implements MembroDatasource {
   Future<void> _garantirCacheCarregado() async {
     if (_cacheCarregado) return;
     await _carregarCache();
-  }
-
-  /// Converte camelCase para snake_case
-  /// Ex: "numeroCadastro" → "numero_cadastro"
-  static String _camelToSnakeCase(String input) {
-    final buffer = StringBuffer();
-    for (int i = 0; i < input.length; i++) {
-      final char = input[i];
-      if (char.toUpperCase() == char && i > 0) {
-        buffer.write('_');
-        buffer.write(char.toLowerCase());
-      } else {
-        buffer.write(char);
-      }
-    }
-    return buffer.toString();
-  }
-
-  /// Converte um mapa inteiro de camelCase para snake_case
-  /// Preserva valores null e não reconverte campos já em snake_case
-  static Map<String, dynamic> _convertToSnakeCase(Map<String, dynamic> json) {
-    final result = <String, dynamic>{};
-    json.forEach((key, value) {
-      // Alguns campos já estão em snake_case (como id, cpf)
-      // Conversão é idempotente: snake_case → snake_case = snake_case
-      final snakeKey = _camelToSnakeCase(key);
-      result[snakeKey] = value;
-    });
-    return result;
   }
 }

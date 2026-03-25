@@ -5,7 +5,6 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../../core/constants/usuario_constants.dart';
 import '../../domain/entities/usuario.dart';
 import '../controllers/cadastro_controller.dart';
-import '../../../organizacao/presentation/controllers/nucleo_controller.dart';
 
 /// Página para cadastrar novo usuário
 class CadastrarPage extends StatefulWidget {
@@ -18,7 +17,6 @@ class CadastrarPage extends StatefulWidget {
 class _CadastrarPageState extends State<CadastrarPage> {
   final _formKey = GlobalKey<FormState>();
   final controller = Get.find<CadastroController>();
-  final nucleoController = Get.find<NucleoController>();
 
   // Máscaras de formatação
   final cpfMask = MaskTextInputFormatter(
@@ -265,16 +263,12 @@ class _CadastrarPageState extends State<CadastrarPage> {
 
               // Núcleo
               _buildSecaoTitulo('Núcleo'),
-              Obx(
-                () => _buildDropdown(
-                  value: nucleoSelecionado,
-                  label: 'Núcleo *',
-                  items: nucleoController.nucleos
-                      .map((n) => n.nome)
-                      .toList(),
-                  onChanged: (v) => setState(() => nucleoSelecionado = v),
-                  validator: (v) => v == null ? 'Campo obrigatório' : null,
-                ),
+              _buildDropdown(
+                value: nucleoSelecionado,
+                label: 'Núcleo *',
+                items: UsuarioConstants.nucleoOpcoes,
+                onChanged: (v) => setState(() => nucleoSelecionado = v),
+                validator: (v) => v == null ? 'Campo obrigatório' : null,
               ),
 
               const SizedBox(height: 24),

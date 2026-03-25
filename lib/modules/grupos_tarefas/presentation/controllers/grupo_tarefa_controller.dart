@@ -14,23 +14,23 @@ class GrupoTarefaController extends GetxController {
   GrupoTarefaController(this.repository);
 
   /// Busca membro por número de cadastro
-  GrupoTarefaMembro? buscarPorCadastro(String numeroCadastro) {
-    return repository.getPorCadastro(numeroCadastro);
+  Future<GrupoTarefaMembro?> buscarPorCadastro(String numeroCadastro) async {
+    return await repository.getPorCadastro(numeroCadastro);
   }
 
   /// Carrega todos os membros de grupos-tarefas
-  void carregarTodos() {
+  Future<void> carregarTodos() async {
     isLoading.value = true;
     try {
-      membros.value = repository.getTodos();
+      membros.value = await repository.getTodos();
     } finally {
       isLoading.value = false;
     }
   }
 
   /// Filtra membros para relatórios
-  List<GrupoTarefaMembro> filtrar({String? grupoTarefa, String? funcao}) {
-    return repository.filtrar(grupoTarefa: grupoTarefa, funcao: funcao);
+  Future<List<GrupoTarefaMembro>> filtrar({String? grupoTarefa, String? funcao}) async {
+    return await repository.filtrar(grupoTarefa: grupoTarefa, funcao: funcao);
   }
 
   @override
@@ -43,7 +43,7 @@ class GrupoTarefaController extends GetxController {
   Future<void> remover(String numeroCadastro) async {
     isLoading.value = true;
     try {
-      repository.remover(numeroCadastro);
+      await repository.remover(numeroCadastro);
       membros.removeWhere((m) => m.numeroCadastro == numeroCadastro);
       Get.snackbar('Sucesso', 'Membro removido do grupo-tarefa');
     } catch (e) {
@@ -58,11 +58,11 @@ class GrupoTarefaController extends GetxController {
   Future<void> salvar(GrupoTarefaMembro membro) async {
     isLoading.value = true;
     try {
-      final existe = buscarPorCadastro(membro.numeroCadastro);
+      final existe = await buscarPorCadastro(membro.numeroCadastro);
 
       if (existe != null) {
         // Atualizar
-        repository.atualizar(membro);
+        await repository.atualizar(membro);
         final index = membros.indexWhere(
           (m) => m.numeroCadastro == membro.numeroCadastro,
         );
@@ -72,7 +72,7 @@ class GrupoTarefaController extends GetxController {
         Get.snackbar('Sucesso', 'Grupo-tarefa atualizado com sucesso');
       } else {
         // Adicionar
-        repository.adicionar(membro);
+        await repository.adicionar(membro);
         membros.add(membro);
         Get.snackbar(
           'Sucesso',

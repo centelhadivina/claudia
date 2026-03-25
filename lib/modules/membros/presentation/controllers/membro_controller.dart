@@ -27,7 +27,7 @@ class MembroController extends GetxController {
         throw Exception('Já existe um membro com este CPF');
       }
 
-      repository.adicionarMembro(membro);
+      await repository.adicionarMembro(membro);
       membros.add(membro);
 
       Get.snackbar(
@@ -51,7 +51,7 @@ class MembroController extends GetxController {
         dataUltimaAlteracao: DateTime.now(),
       );
 
-      repository.atualizarMembro(membroAtualizado);
+      await repository.atualizarMembro(membroAtualizado);
 
       final index = membros.indexWhere((m) => m.id == membro.id);
       if (index != -1) {
@@ -108,7 +108,7 @@ class MembroController extends GetxController {
 
   /// Filtra membros para relatórios
   List<Membro> filtrarParaRelatorio({
-    List<String>? statusList, // Múltiplos status
+    String? status,
     String? funcao,
     String? classificacao,
     String? diaSessao,
@@ -121,11 +121,8 @@ class MembroController extends GetxController {
   }) {
     var resultado = List<Membro>.from(membros);
 
-    // Filtro de múltiplos status
-    if (statusList != null && statusList.isNotEmpty) {
-      resultado = resultado
-          .where((m) => statusList.contains(m.status))
-          .toList();
+    if (status != null && status.isNotEmpty) {
+      resultado = resultado.where((m) => m.status == status).toList();
     }
 
     if (funcao != null && funcao.isNotEmpty) {

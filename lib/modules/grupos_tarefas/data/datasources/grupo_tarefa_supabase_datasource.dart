@@ -1,5 +1,6 @@
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/supabase_service.dart';
+import '../../../membros/data/models/membro_model.dart';
 import '../models/grupo_tarefa_membro_model.dart';
 import 'grupo_tarefa_datasource.dart';
 
@@ -7,52 +8,61 @@ import 'grupo_tarefa_datasource.dart';
 class GrupoTarefaSupabaseDatasource implements GrupoTarefaDatasource {
   final SupabaseService _supabaseService;
 
-  // Cache local para operações síncronas
+  // Cache local para simular operações síncronas
   final List<GrupoTarefaMembroModel> _cache = [];
   bool _cacheCarregado = false;
 
   GrupoTarefaSupabaseDatasource(this._supabaseService);
 
   @override
-  void adicionar(GrupoTarefaMembroModel membro) {
-    _garantirCacheCarregado().then((_) {
-      final data = _modelToSupabaseJson(membro);
-      data.remove('id');
-      data.remove('created_at');
-      data.remove('updated_at');
+  Future<void> adicionar(GrupoTarefaMembroModel membro) async {
+    // Operação assíncrona
+    final data = {
+      'cadastro': membro.numeroCadastro,
+      'grupo_tarefa': membro.grupoTarefa,
+    };
 
-      return _supabaseService.client.from('grupos_tarefas').insert(data);
-    }).then((_) {
-      _cache.add(membro);
-    }).catchError((error) {
-      throw ServerException('Erro ao adicionar membro ao grupo tarefa: $error');
-    });
+    await _garantirCacheCarregado();
+    try {
+      await _supabaseService.client
+          .from('membros_historico')
+          .update(data)
+          .eq('cadastro', membro.numeroCadastro);
+      
+      final index = _cache.indexWhere((m) => m.numeroCadastro == membro.numeroCadastro);
+      if (index != -1) {
+        _cache[index] = membro;
+      } else {
+        _cache.add(membro);
+      }
+    } catch (error) {
+      throw ServerException('Erro ao adicionar grupo-tarefa: $error');
+    }
   }
 
   @override
-  void atualizar(GrupoTarefaMembroModel membro) {
-    final data = _modelToSupabaseJson(membro);
-    data.remove('created_at');
-    data['data_ultima_alteracao'] = DateTime.now().toIso8601String();
+  Future<void> atualizar(GrupoTarefaMembroModel membro) async {
+    final data = {
+      'grupo_tarefa': membro.grupoTarefa,
+    };
 
-    _supabaseService.client
-        .from('grupos_tarefas')
-        .update(data)
-        .eq('numero_cadastro', membro.numeroCadastro)
-        .then((_) {
-      final index = _cache.indexWhere(
-        (m) => m.numeroCadastro == membro.numeroCadastro,
-      );
+    try {
+      await _supabaseService.client
+          .from('membros_historico')
+          .update(data)
+          .eq('cadastro', membro.numeroCadastro);
+      
+      final index = _cache.indexWhere((m) => m.numeroCadastro == membro.numeroCadastro);
       if (index != -1) {
         _cache[index] = membro;
       }
-    }).catchError((error) {
-      throw ServerException('Erro ao atualizar membro do grupo tarefa: $error');
-    });
+    } catch (error) {
+      throw ServerException('Erro ao atualizar grupo-tarefa: $error');
+    }
   }
 
   @override
-  List<GrupoTarefaMembroModel> filtrar({String? grupoTarefa, String? funcao}) {
+  Future<List<GrupoTarefaMembroModel>> filtrar({String? grupoTarefa, String? funcao}) async {
     var resultado = List<GrupoTarefaMembroModel>.from(_cache);
 
     if (grupoTarefa != null && grupoTarefa.isNotEmpty) {
@@ -67,86 +77,81 @@ class GrupoTarefaSupabaseDatasource implements GrupoTarefaDatasource {
   }
 
   @override
-  GrupoTarefaMembroModel? getPorCadastro(String numeroCadastro) {
-    return _cache.cast<GrupoTarefaMembroModel?>().firstWhere(
-          (m) => m?.numeroCadastro == numeroCadastro,
-          orElse: () => null,
-        );
+  Future<GrupoTarefaMembroModel?> getPorCadastro(String numeroCadastro) async {
+    try {
+      return _cache.firstWhere((m) => m.numeroCadastro == numeroCadastro);
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
-  List<GrupoTarefaMembroModel> getTodos() {
-    return List.from(_cache);
-  }
+  Future<List<GrupoTarefaMembroModel>> getTodos() async => List.from(_cache);
 
   @override
-  void remover(String numeroCadastro) {
-    _supabaseService.client
-        .from('grupos_tarefas')
-        .delete()
-        .eq('numero_cadastro', numeroCadastro)
-        .then((_) {
+  Future<void> remover(String numeroCadastro) async {
+    final data = {
+      'grupo_tarefa': null,
+    };
+
+    try {
+      await _supabaseService.client
+          .from('membros_historico')
+          .update(data)
+          .eq('cadastro', numeroCadastro);
+      
       _cache.removeWhere((m) => m.numeroCadastro == numeroCadastro);
-    }).catchError((error) {
-      throw ServerException('Erro ao remover membro do grupo tarefa: $error');
-    });
+    } catch (error) {
+      throw ServerException('Erro ao remover grupo-tarefa: $error');
+    }
   }
 
-  /// Carrega cache inicial do Supabase
+  /// Carrega cache inicial de membros com grupos-tarefas
   Future<void> _carregarCache() async {
     if (_cacheCarregado) return;
 
     try {
-      print('🔍 [GRUPOS TAREFAS] Carregando do Supabase...');
+      print('🔍 [GRUPOS-TAREFAS DS] Consultando membros com grupo_tarefa...');
       final response = await _supabaseService.client
-          .from('grupos_tarefas')
+          .from('membros_historico')
           .select()
+          .neq('grupo_tarefa', '')
           .order('nome', ascending: true);
 
       _cache.clear();
       _cache.addAll(
         (response as List)
-            .map((json) => _supabaseJsonToModel(json))
+            .map((json) {
+              final membro = MembroModel.fromJson(json);
+              if (membro.grupoTarefa != null && membro.grupoTarefa!.isNotEmpty) {
+                return GrupoTarefaMembroModel(
+                  id: membro.id,
+                  numeroCadastro: membro.numeroCadastro,
+                  nome: membro.nome,
+                  status: membro.status,
+                  grupoTarefa: membro.grupoTarefa ?? '',
+                  funcao: membro.funcao,
+                  dataUltimaAlteracao: membro.dataUltimaAlteracao,
+                );
+              }
+              return null;
+            })
+            .whereType<GrupoTarefaMembroModel>()
             .toList(),
       );
       _cacheCarregado = true;
-      print('✅ [GRUPOS TAREFAS] ${_cache.length} membros carregados');
+      print(
+        '✅ [GRUPOS-TAREFAS DS] ${_cache.length} membros com grupo_tarefa carregados',
+      );
     } catch (e) {
-      print('❌ [GRUPOS TAREFAS] Erro ao carregar: $e');
+      print('❌ [GRUPOS-TAREFAS DS] Erro ao carregar: $e');
+      // Cache não carregado, retornará lista vazia
     }
   }
 
-  /// Garante que o cache está carregado
+  /// Garante que o cache está carregado antes de qualquer operação
   Future<void> _garantirCacheCarregado() async {
     if (_cacheCarregado) return;
     await _carregarCache();
-  }
-
-  /// Converte model para JSON do Supabase (snake_case)
-  Map<String, dynamic> _modelToSupabaseJson(GrupoTarefaMembroModel model) {
-    return {
-      'id': model.id,
-      'numero_cadastro': model.numeroCadastro,
-      'nome': model.nome,
-      'status': model.status,
-      'grupo_tarefa': model.grupoTarefa,
-      'funcao': model.funcao,
-      'data_ultima_alteracao': model.dataUltimaAlteracao?.toIso8601String(),
-    };
-  }
-
-  /// Converte JSON do Supabase para model
-  GrupoTarefaMembroModel _supabaseJsonToModel(Map<String, dynamic> json) {
-    return GrupoTarefaMembroModel(
-      id: json['id']?.toString(),
-      numeroCadastro: json['numero_cadastro']?.toString() ?? '',
-      nome: json['nome']?.toString() ?? '',
-      status: json['status']?.toString() ?? '',
-      grupoTarefa: json['grupo_tarefa']?.toString() ?? '',
-      funcao: json['funcao']?.toString() ?? '',
-      dataUltimaAlteracao: json['data_ultima_alteracao'] != null
-          ? DateTime.parse(json['data_ultima_alteracao'] as String)
-          : null,
-    );
   }
 }

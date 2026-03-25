@@ -252,7 +252,7 @@ class UsuarioModel extends Usuario {
       nucleoPertence: getField(['nucleoPertence', 'nucleo_pertence', 'NUCLEO']),
       statusAtual: getField(['statusAtual', 'status_atual', 'STATUS']),
       classificacao: getField(['classificacao', 'CLASSIFICACAO']),
-      diaSessao: _normalizarDiaSessao(getField(['diaSessao', 'dia_sessao', 'DIA_SESSAO'])),
+      diaSessao: getField(['diaSessao', 'dia_sessao', 'DIA_SESSAO']),
       // data_batismo (date) ou DATA_BATISMO (text)
       dataBatismo: parseDate(getField(['data_batismo', 'DATA_BATISMO'])),
       mediumCelebranteBatismo: getField([
@@ -519,36 +519,5 @@ class UsuarioModel extends Usuario {
       'grupoAcaoSocial': toUpperCaseOrNull(grupoAcaoSocial),
       'cargoLideranca': toUpperCaseOrNull(cargoLideranca),
     };
-  }
-
-  /// Normaliza o valor do dia de sessão que vem do banco de dados (em MAIÚSCULAS)
-  /// para o formato esperado nos dropdowns (Título Case)
-  static String? _normalizarDiaSessao(dynamic value) {
-    if (value == null) return null;
-    
-    final val = value.toString().trim().toUpperCase();
-    
-    // Mapeamento de valores do banco para formato exibição
-    const mapa = {
-      'SEGUNDA-FEIRA': 'Segunda-feira',
-      'SEGUNDA': 'Segunda-feira',
-      'TERÇA-FEIRA': 'Terça-feira',
-      'TERÇA': 'Terça-feira',
-      'TERÇA-FEIRA (OJU)': 'Terça-feira (OJU)',
-      'TERÇA (OJU)': 'Terça-feira (OJU)',
-      'QUARTA-FEIRA': 'Quarta-feira',
-      'QUARTA': 'Quarta-feira',
-      'QUINTA-FEIRA': 'Quinta-feira',
-      'QUINTA': 'Quinta-feira',
-      'SEXTA-FEIRA': 'Sexta-feira',
-      'SEXTA': 'Sexta-feira',
-      'SÁBADO': 'Sábado',
-      'SÁBADO (CENTELHINHA)': 'Sábado (Centelhinha)',
-      'DOMINGO': 'Domingo',
-      'FLUTUANTE': 'Flutuante',
-      'TAREFEIRO': 'Tarefeiro',
-    };
-    
-    return mapa[val] ?? value.toString();
   }
 }

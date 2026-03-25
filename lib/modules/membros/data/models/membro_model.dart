@@ -55,6 +55,16 @@ class MembroModel extends Membro {
     super.terceiroOrixa,
     super.quartoOrixa,
     super.observacoesOrixa,
+    super.grupoTarefa,
+    super.acaoSocial,
+    super.cargoLideranca,
+    super.nomePr,
+    super.nomeBai,
+    super.nomeCab,
+    super.nomeMar,
+    super.nomeMal,
+    super.nomeCig,
+    super.nomePv,
     super.dataCriacao,
     super.dataUltimaAlteracao,
   });
@@ -114,31 +124,19 @@ class MembroModel extends Membro {
       terceiroOrixa: membro.terceiroOrixa,
       quartoOrixa: membro.quartoOrixa,
       observacoesOrixa: membro.observacoesOrixa,
+      grupoTarefa: membro.grupoTarefa,
+      acaoSocial: membro.acaoSocial,
+      cargoLideranca: membro.cargoLideranca,
+      nomePr: membro.nomePr,
+      nomeBai: membro.nomeBai,
+      nomeCab: membro.nomeCab,
+      nomeMar: membro.nomeMar,
+      nomeMal: membro.nomeMal,
+      nomeCig: membro.nomeCig,
+      nomePv: membro.nomePv,
       dataCriacao: membro.dataCriacao,
       dataUltimaAlteracao: membro.dataUltimaAlteracao,
     );
-  }
-
-  /// Normaliza o status para os valores padrão do sistema
-  static String _normalizarStatus(String? status) {
-    if (status == null || status.isEmpty) return '';
-    
-    final statusUpper = status.toUpperCase().trim();
-    final statusNormalizado = (switch (statusUpper) {
-      'ATIVO' => 'Membro ativo',
-      'INATIVO' => 'Excluído',
-      'SUSPENSO' => 'Excluído',
-      'ESTAGIÁRIO' || 'ESTAGIARIO' => 'Estagiário',
-      'MEMBRO ATIVO' => 'Membro ativo',
-      'EXCLUÍDO' || 'EXCLUIDO' => 'Excluído',
-      _ => status,
-    });
-    
-    if (statusNormalizado != status) {
-      print('🔄 [MEMBRO MODEL] Status normalizado: "$status" → "$statusNormalizado"');
-    }
-    
-    return statusNormalizado;
   }
 
   factory MembroModel.fromJson(Map<String, dynamic> json) {
@@ -151,11 +149,11 @@ class MembroModel extends Membro {
       cpf: json['cpf']?.toString() ?? '',
       nome: json['nome']?.toString() ?? '',
       nucleo: json['nucleo']?.toString() ?? '',
-      status: _normalizarStatus(json['status']?.toString()),
+      status: json['status']?.toString() ?? '',
       funcao: json['funcao']?.toString() ?? '',
       classificacao: json['classificacao']?.toString() ?? '',
       diaSessao:
-          _normalizarDiaSessao(json['dia_sessao']?.toString()) ??
+          json['dia_sessao']?.toString() ??
           '', // Mapeia 'dia_sessao' do Supabase
       primeiroContatoEmergencia: json['primeiro_contato_emergencia'] as String?,
       segundoContatoEmergencia: json['segundo_contato_emergencia'] as String?,
@@ -247,6 +245,16 @@ class MembroModel extends Membro {
       terceiroOrixa: json['terceiro_quarto_orixa'] as String?,
       quartoOrixa: json['quarto_orixa'] as String?,
       observacoesOrixa: json['observacoes'] as String?,
+      grupoTarefa: json['grupo_tarefa'] as String?,
+      acaoSocial: json['acao_social'] as String?,
+      cargoLideranca: json['cargo_lideranca'] as String?,
+      nomePr: json['nome_pr'] as String?,
+      nomeBai: json['nome_bai'] as String?,
+      nomeCab: json['nome_cab'] as String?,
+      nomeMar: json['nome_mar'] as String?,
+      nomeMal: json['nome_mal'] as String?,
+      nomeCig: json['nome_cig'] as String?,
+      nomePv: json['nome_pv'] as String?,
       dataCriacao: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : DateTime.now(),
@@ -259,99 +267,81 @@ class MembroModel extends Membro {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'numeroCadastro': numeroCadastro,
-      'cpf': cpf,
+      'cadastro': numeroCadastro,
+      // 'cpf': cpf, // Não existe no schema do banco
       'nome': toUpperCaseOrNull(nome) ?? nome,
       'nucleo': toUpperCaseOrNull(nucleo) ?? nucleo,
       'status': toUpperCaseOrNull(status) ?? status,
       'funcao': toUpperCaseOrNull(funcao) ?? funcao,
       'classificacao': toUpperCaseOrNull(classificacao) ?? classificacao,
-      'diaSessao': toUpperCaseOrNull(diaSessao) ?? diaSessao,
-      'primeiroContatoEmergencia': toUpperCaseOrNull(primeiroContatoEmergencia),
-      'segundoContatoEmergencia': toUpperCaseOrNull(segundoContatoEmergencia),
-      'inicioPrimeiroEstagio': inicioPrimeiroEstagio?.toIso8601String(),
-      'desistenciaPrimeiroEstagio': desistenciaPrimeiroEstagio
-          ?.toIso8601String(),
-      'primeiroRitoPassagem': primeiroRitoPassagem?.toIso8601String(),
-      'dataPrimeiroDesligamento': dataPrimeiroDesligamento?.toIso8601String(),
-      'justificativaPrimeiroDesligamento': toUpperCaseOrNull(
+      'dia_sessao': toUpperCaseOrNull(diaSessao) ?? diaSessao,
+      // Contatos de emergencia não existem no schema do banco
+      // 'primeiro_contato_emergencia': toUpperCaseOrNull(primeiroContatoEmergencia),
+      // 'segundo_contato_emergencia': toUpperCaseOrNull(segundoContatoEmergencia),
+      'inicio_estagio': inicioPrimeiroEstagio?.toIso8601String(),
+      'desistencia_estagio': desistenciaPrimeiroEstagio?.toIso8601String(),
+      'primeiro_rito_passagem': primeiroRitoPassagem?.toIso8601String(),
+      'primeiro_desligamento': dataPrimeiroDesligamento?.toIso8601String(),
+      'primeiro_desligamento_justificativa': toUpperCaseOrNull(
         justificativaPrimeiroDesligamento,
       ),
-      'condicaoSegundoEstagio': toUpperCaseOrNull(condicaoSegundoEstagio),
-      'inicioSegundoEstagio': inicioSegundoEstagio?.toIso8601String(),
-      'desistenciaSegundoEstagio': desistenciaSegundoEstagio?.toIso8601String(),
-      'segundoRitoPassagem': segundoRitoPassagem?.toIso8601String(),
-      'dataSegundoDesligamento': dataSegundoDesligamento?.toIso8601String(),
-      'justificativaSegundoDesligamento': toUpperCaseOrNull(
+      // Segundo, terceiro e quarto estágios não existem no schema do banco
+      // 'condicao_segundo_estagio': toUpperCaseOrNull(condicaoSegundoEstagio),
+      // 'inicio_segundo_estagio': inicioSegundoEstagio?.toIso8601String(),
+      // 'desistencia_segundo_estagio': desistenciaSegundoEstagio?.toIso8601String(),
+      'segundo_rito_passagem': segundoRitoPassagem?.toIso8601String(),
+      'segundo_desligamento': dataSegundoDesligamento?.toIso8601String(),
+      'segundo_desligamento_justificativa': toUpperCaseOrNull(
         justificativaSegundoDesligamento,
       ),
-      'condicaoTerceiroEstagio': toUpperCaseOrNull(condicaoTerceiroEstagio),
-      'inicioTerceiroEstagio': inicioTerceiroEstagio?.toIso8601String(),
-      'desistenciaTerceiroEstagio': desistenciaTerceiroEstagio
-          ?.toIso8601String(),
-      'terceiroRitoPassagem': terceiroRitoPassagem?.toIso8601String(),
-      'dataTerceiroDesligamento': dataTerceiroDesligamento?.toIso8601String(),
-      'justificativaTerceiroDesligamento': toUpperCaseOrNull(
+      // 'condicao_terceiro_estagio': toUpperCaseOrNull(condicaoTerceiroEstagio),
+      // 'inicio_terceiro_estagio': inicioTerceiroEstagio?.toIso8601String(),
+      // 'desistencia_terceiro_estagio': desistenciaTerceiroEstagio?.toIso8601String(),
+      'terceiro_rito_passagem': terceiroRitoPassagem?.toIso8601String(),
+      'terceiro_desligamento': dataTerceiroDesligamento?.toIso8601String(),
+      'terceiro_desligamento_justificativa': toUpperCaseOrNull(
         justificativaTerceiroDesligamento,
       ),
-      'condicaoQuartoEstagio': toUpperCaseOrNull(condicaoQuartoEstagio),
-      'inicioQuartoEstagio': inicioQuartoEstagio?.toIso8601String(),
-      'desistenciaQuartoEstagio': desistenciaQuartoEstagio?.toIso8601String(),
-      'quartoRitoPassagem': quartoRitoPassagem?.toIso8601String(),
-      'dataQuartoDesligamento': dataQuartoDesligamento?.toIso8601String(),
-      'justificativaQuartoDesligamento': toUpperCaseOrNull(
-        justificativaQuartoDesligamento,
-      ),
-      'dataBatizado': dataBatizado?.toIso8601String(),
-      'padrinhoBatismo': toUpperCaseOrNull(padrinhoBatismo),
-      'madrinhaBatismo': toUpperCaseOrNull(madrinhaBatismo),
-      'dataJogoOrixa': dataJogoOrixa?.toIso8601String(),
-      'primeiraCamarinha': primeiraCamarinha?.toIso8601String(),
-      'segundaCamarinha': segundaCamarinha?.toIso8601String(),
-      'terceiraCamarinha': terceiraCamarinha?.toIso8601String(),
-      'dataCoroacaoSacerdote': dataCoroacaoSacerdote?.toIso8601String(),
-      'atividadeEspiritual': toUpperCaseOrNull(atividadeEspiritual),
-      'grupoTrabalhoEspiritual': toUpperCaseOrNull(grupoTrabalhoEspiritual),
-      'primeiroOrixa': toUpperCaseOrNull(primeiroOrixa),
-      'adjuntoPrimeiroOrixa': toUpperCaseOrNull(adjuntoPrimeiroOrixa),
-      'segundoOrixa': toUpperCaseOrNull(segundoOrixa),
-      'adjuntoSegundoOrixa': toUpperCaseOrNull(adjuntoSegundoOrixa),
-      'terceiroOrixa': toUpperCaseOrNull(terceiroOrixa),
-      'quartoOrixa': toUpperCaseOrNull(quartoOrixa),
-      'observacoesOrixa': toUpperCaseOrNull(observacoesOrixa),
-      'dataCriacao': dataCriacao?.toIso8601String(),
-      'dataUltimaAlteracao': dataUltimaAlteracao?.toIso8601String(),
+      // Quarto estágio não existe no schema do banco
+      // 'condicao_quarto_estagio': toUpperCaseOrNull(condicaoQuartoEstagio),
+      // 'inicio_quarto_estagio': inicioQuartoEstagio?.toIso8601String(),
+      // 'desistencia_quarto_estagio': desistenciaQuartoEstagio?.toIso8601String(),
+      // 'quarto_rito_passagem': quartoRitoPassagem?.toIso8601String(),
+      // 'quarto_desligamento': dataQuartoDesligamento?.toIso8601String(),
+      // 'quarto_desligamento_justificativa': toUpperCaseOrNull(
+      //   justificativaQuartoDesligamento,
+      // ),
+      'ritual_batismo': dataBatizado?.toIso8601String(),
+      // Padrinhos não existem no schema do banco
+      // 'padrinho_batismo': toUpperCaseOrNull(padrinhoBatismo),
+      // 'madrinha_batismo': toUpperCaseOrNull(madrinhaBatismo),
+      'jogo_orixa': dataJogoOrixa?.toIso8601String(),
+      'primeira_camarinha': primeiraCamarinha?.toIso8601String(),
+      'segunda_camarinha': segundaCamarinha?.toIso8601String(),
+      'terceira_camarinha': terceiraCamarinha?.toIso8601String(),
+      'coroacao_sacerdote': dataCoroacaoSacerdote?.toIso8601String(),
+      'atividade_espiritual': toUpperCaseOrNull(atividadeEspiritual),
+      'grupo_trabalho_espiritual': toUpperCaseOrNull(grupoTrabalhoEspiritual),
+      'primeiro_orixa': toUpperCaseOrNull(primeiroOrixa),
+      'adjunto_primeiro_orixa': toUpperCaseOrNull(adjuntoPrimeiroOrixa),
+      'segundo_orixa': toUpperCaseOrNull(segundoOrixa),
+      'adjunto_segundo_orixa': toUpperCaseOrNull(adjuntoSegundoOrixa),
+      'terceiro_quarto_orixa': toUpperCaseOrNull(terceiroOrixa),
+      // 'quarto_orixa': toUpperCaseOrNull(quartoOrixa), // Não existe no schema
+      'observacoes': toUpperCaseOrNull(observacoesOrixa),
+   
+      'grupo_tarefa': toUpperCaseOrNull(grupoTarefa),
+      'acao_social': toUpperCaseOrNull(acaoSocial),
+      'cargo_lideranca': toUpperCaseOrNull(cargoLideranca),
+      'nome_pr': toUpperCaseOrNull(nomePr),
+      'nome_bai': toUpperCaseOrNull(nomeBai),
+      'nome_cab': toUpperCaseOrNull(nomeCab),
+      'nome_mar': toUpperCaseOrNull(nomeMar),
+      'nome_mal': toUpperCaseOrNull(nomeMal),
+      'nome_cig': toUpperCaseOrNull(nomeCig),
+      'nome_pv': toUpperCaseOrNull(nomePv),
+      'created_at': dataCriacao?.toIso8601String(),
+      'updated_at': dataUltimaAlteracao?.toIso8601String(),
     };
-  }
-
-  /// Normaliza o valor do dia de sessão que vem do banco de dados (em MAIÚSCULAS)
-  /// para o formato esperado nos dropdowns (Título Case)
-  static String? _normalizarDiaSessao(String? value) {
-    if (value == null || value.isEmpty) return null;
-    
-    final val = value.trim().toUpperCase();
-    
-    // Mapeamento de valores do banco para formato exibição
-    const mapa = {
-      'SEGUNDA-FEIRA': 'Segunda-feira',
-      'SEGUNDA': 'Segunda-feira',
-      'TERÇA-FEIRA': 'Terça-feira',
-      'TERÇA': 'Terça-feira',
-      'TERÇA-FEIRA (OJU)': 'Terça-feira (OJU)',
-      'TERÇA (OJU)': 'Terça-feira (OJU)',
-      'QUARTA-FEIRA': 'Quarta-feira',
-      'QUARTA': 'Quarta-feira',
-      'QUINTA-FEIRA': 'Quinta-feira',
-      'QUINTA': 'Quinta-feira',
-      'SEXTA-FEIRA': 'Sexta-feira',
-      'SEXTA': 'Sexta-feira',
-      'SÁBADO': 'Sábado',
-      'SÁBADO (CENTELHINHA)': 'Sábado (Centelhinha)',
-      'DOMINGO': 'Domingo',
-      'FLUTUANTE': 'Flutuante',
-      'TAREFEIRO': 'Tarefeiro',
-    };
-    
-    return mapa[val];
   }
 }

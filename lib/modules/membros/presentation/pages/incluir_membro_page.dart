@@ -7,7 +7,6 @@ import '../../../cadastro/domain/entities/usuario.dart';
 import '../../../cadastro/presentation/controllers/cadastro_controller.dart';
 import '../../domain/entities/membro.dart';
 import '../controllers/membro_controller.dart';
-import '../../../organizacao/presentation/controllers/nucleo_controller.dart';
 
 /// Página para incluir novo membro da CLAUDIA
 /// Busca primeiro o cadastro pelo CPF e puxa dados pessoais
@@ -22,7 +21,6 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
   final _formKey = GlobalKey<FormState>();
   final cadastroController = Get.find<CadastroController>();
   final membroController = Get.find<MembroController>();
-  final nucleoController = Get.find<NucleoController>();
 
   // Passo 1: Buscar CPF
   final cpfController = TextEditingController();
@@ -82,7 +80,7 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Incluir Novo Membro'),
+        title: const Text('Incluir Novo Membro',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.purple,
       ),
       body: Form(
@@ -209,16 +207,12 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
                 readOnly: true,
                 hint: 'Gerado automaticamente',
               ),
-              Obx(
-                () => _buildDropdown(
-                  value: nucleoSelecionado,
-                  label: 'Núcleo *',
-                  items: nucleoController.nucleos
-                      .map((n) => n.nome)
-                      .toList(),
-                  onChanged: (v) => setState(() => nucleoSelecionado = v),
-                  validator: (v) => v == null ? 'Campo obrigatório' : null,
-                ),
+              _buildDropdown(
+                value: nucleoSelecionado,
+                label: 'Núcleo *',
+                items: MembroConstants.nucleoOpcoes,
+                onChanged: (v) => setState(() => nucleoSelecionado = v),
+                validator: (v) => v == null ? 'Campo obrigatório' : null,
               ),
               _buildDropdown(
                 value: statusSelecionado,

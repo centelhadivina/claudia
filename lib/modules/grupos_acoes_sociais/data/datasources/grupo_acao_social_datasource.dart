@@ -4,8 +4,6 @@ import '../models/grupo_acao_social_membro_model.dart';
 abstract class GrupoAcaoSocialDatasource {
   Future<void> adicionar(GrupoAcaoSocialMembroModel membro);
   Future<void> atualizar(GrupoAcaoSocialMembroModel membro);
-  Future<List<String>> carregarFuncoesDisponiveis();
-  Future<List<String>> carregarGruposDisponiveis();
   Future<List<GrupoAcaoSocialMembroModel>> filtrar({
     String? grupoAcaoSocial,
     String? funcao,
@@ -49,16 +47,6 @@ class GrupoAcaoSocialDatasourceImpl implements GrupoAcaoSocialDatasource {
     if (index != -1) {
       _membros[index] = membro;
     }
-  }
-
-  @override
-  Future<List<String>> carregarFuncoesDisponiveis() async {
-    return [];
-  }
-
-  @override
-  Future<List<String>> carregarGruposDisponiveis() async {
-    return [];
   }
 
   @override

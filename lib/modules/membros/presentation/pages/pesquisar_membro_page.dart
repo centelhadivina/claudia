@@ -83,62 +83,6 @@ class _DetalheMembroDialog extends StatelessWidget {
                   ),
 
                   const Divider(height: 32),
-                  _buildSecao('HISTÓRICO'),
-                  
-                  // 1º Estágio
-                  const Text(
-                    '1º Estágio',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.purple),
-                  ),
-                  _buildInfo('Início', _formatarData(membro.inicioPrimeiroEstagio)),
-                  _buildInfo('Desistência', _formatarData(membro.desistenciaPrimeiroEstagio)),
-                  _buildInfo('Rito de Passagem', _formatarData(membro.primeiroRitoPassagem)),
-                  _buildInfo('Desligamento', _formatarData(membro.dataPrimeiroDesligamento)),
-                  _buildInfo('Justificativa Desligamento', membro.justificativaPrimeiroDesligamento ?? '-'),
-                  _buildInfo('Condição para 2º Estágio', membro.condicaoSegundoEstagio ?? '-'),
-                  
-                  const SizedBox(height: 12),
-                  
-                  // 2º Estágio
-                  const Text(
-                    '2º Estágio',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.purple),
-                  ),
-                  _buildInfo('Início', _formatarData(membro.inicioSegundoEstagio)),
-                  _buildInfo('Desistência', _formatarData(membro.desistenciaSegundoEstagio)),
-                  _buildInfo('Rito de Passagem', _formatarData(membro.segundoRitoPassagem)),
-                  _buildInfo('Desligamento', _formatarData(membro.dataSegundoDesligamento)),
-                  _buildInfo('Justificativa Desligamento', membro.justificativaSegundoDesligamento ?? '-'),
-                  _buildInfo('Condição para 3º Estágio', membro.condicaoTerceiroEstagio ?? '-'),
-                  
-                  const SizedBox(height: 12),
-                  
-                  // 3º Estágio
-                  const Text(
-                    '3º Estágio',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.purple),
-                  ),
-                  _buildInfo('Início', _formatarData(membro.inicioTerceiroEstagio)),
-                  _buildInfo('Desistência', _formatarData(membro.desistenciaTerceiroEstagio)),
-                  _buildInfo('Rito de Passagem', _formatarData(membro.terceiroRitoPassagem)),
-                  _buildInfo('Desligamento', _formatarData(membro.dataTerceiroDesligamento)),
-                  _buildInfo('Justificativa Desligamento', membro.justificativaTerceiroDesligamento ?? '-'),
-                  _buildInfo('Condição para 4º Estágio', membro.condicaoQuartoEstagio ?? '-'),
-                  
-                  const SizedBox(height: 12),
-                  
-                  // 4º Estágio
-                  const Text(
-                    '4º Estágio',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.purple),
-                  ),
-                  _buildInfo('Início', _formatarData(membro.inicioQuartoEstagio)),
-                  _buildInfo('Desistência', _formatarData(membro.desistenciaQuartoEstagio)),
-                  _buildInfo('Rito de Passagem', _formatarData(membro.quartoRitoPassagem)),
-                  _buildInfo('Desligamento', _formatarData(membro.dataQuartoDesligamento)),
-                  _buildInfo('Justificativa Desligamento', membro.justificativaQuartoDesligamento ?? '-'),
-
-                  const Divider(height: 32),
                   _buildSecao('HISTÓRICO ESPIRITUAL'),
                   _buildInfo(
                     'Data do Batizado',
@@ -208,7 +152,7 @@ class _DetalheMembroDialog extends StatelessWidget {
                     _buildInfo('Observações', membro.observacoesOrixa!),
 
                   const Divider(height: 32),
-                  _buildSecao('NOMES DOS GUIAS ESPIRITUAIS QUE DÃO CONSULTA'),
+                  _buildSecao('NOMES DOS GUIAS ESPIRITUAIS'),
                   _buildInfo('Preto-Velho', membro.nomePr ?? '-'),
                   _buildInfo('Baiano', membro.nomeBai ?? '-'),
                   _buildInfo('Caboclo', membro.nomeCab ?? '-'),
@@ -297,7 +241,7 @@ class _PesquisarMembroPageState extends State<PesquisarMembroPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pesquisar Dados de Membro'),
+        title: const Text('Pesquisar Dados de Membro',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.purple,
       ),
       body: Padding(
@@ -499,11 +443,29 @@ class _PesquisarMembroPageState extends State<PesquisarMembroPage> {
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                   backgroundColor:
-                                      membro.status == 'Membro ativo'
-                                      ? Colors.green.shade100
-                                      : membro.status == 'Estagiário'
-                                      ? Colors.blue.shade100
-                                      : Colors.red.shade100,
+                                      membro.status == 'MEMBRO ATIVO' ||
+                                              membro.status == 'Membro ativo'
+                                          ? Colors.green.shade100
+                                          : membro.status == 'ESTAGIÁRIO' ||
+                                                  membro.status == 'Estagiário'
+                                              ? Colors.blue.shade100
+                                              : Colors.red.shade100,
+                                ),
+                                const SizedBox(width: 8),
+                                OutlinedButton.icon(
+                                  onPressed: () => _editarMembro(membro),
+                                  icon: const Icon(Icons.edit, size: 18),
+                                  label: const Text('EDITAR'),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.deepPurple,
+                                    side: const BorderSide(
+                                      color: Colors.deepPurple,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
                                 IconButton(
@@ -574,5 +536,9 @@ class _PesquisarMembroPageState extends State<PesquisarMembroPage> {
       context: context,
       builder: (context) => _DetalheMembroDialog(membro: membro),
     );
+  }
+
+  void _editarMembro(Membro membro) {
+    Get.toNamed('/membros/editar', arguments: membro.numeroCadastro);
   }
 }

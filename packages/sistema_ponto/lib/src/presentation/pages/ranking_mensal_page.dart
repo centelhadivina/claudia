@@ -34,7 +34,7 @@ class _RankingMensalPageState extends State<RankingMensalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ranking Mensal'),
+        title: const Text('Ranking Mensal',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.purple,
         foregroundColor: Colors.white,
       ),

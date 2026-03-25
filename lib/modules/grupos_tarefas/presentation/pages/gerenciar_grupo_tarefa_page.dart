@@ -35,7 +35,7 @@ class _GerenciarGrupoTarefaPageState extends State<GerenciarGrupoTarefaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gerenciar Membros de Grupo-Tarefa'),
+        title: const Text('Gerenciar Membros de Grupo-Tarefa',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.purple,
       ),
       body: Padding(
@@ -298,11 +298,11 @@ class _GerenciarGrupoTarefaPageState extends State<GerenciarGrupoTarefaPage> {
     );
   }
 
-  void _buscar() {
+  void _buscar() async {
     final membro = membroController.buscarPorNumero(
       numeroCadastroController.text,
     );
-    final grupoTarefa = grupoTarefaController.buscarPorCadastro(
+    final grupoTarefa = await grupoTarefaController.buscarPorCadastro(
       numeroCadastroController.text,
     );
 

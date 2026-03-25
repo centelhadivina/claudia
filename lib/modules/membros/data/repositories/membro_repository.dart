@@ -4,8 +4,8 @@ import '../models/membro_model.dart';
 
 /// Repository para operações com membros
 abstract class MembroRepository {
-  void adicionarMembro(Membro membro);
-  void atualizarMembro(Membro membro);
+  Future<void> adicionarMembro(Membro membro);
+  Future<void> atualizarMembro(Membro membro);
 
   /// Garante que dados estão carregados (importante para datasources assíncronos)
   Future<void> garantirDadosCarregados();
@@ -14,7 +14,7 @@ abstract class MembroRepository {
   List<Membro> getMembros();
   List<Membro> pesquisarPorNome(String nome);
 
-  void removerMembro(String numero);
+  Future<void> removerMembro(String numero);
 }
 
 /// Implementação do repository
@@ -24,15 +24,15 @@ class MembroRepositoryImpl implements MembroRepository {
   MembroRepositoryImpl(this.datasource);
 
   @override
-  void adicionarMembro(Membro membro) {
+  Future<void> adicionarMembro(Membro membro) async {
     final model = MembroModel.fromEntity(membro);
-    datasource.adicionarMembro(model);
+    await datasource.adicionarMembro(model);
   }
 
   @override
-  void atualizarMembro(Membro membro) {
+  Future<void> atualizarMembro(Membro membro) async {
     final model = MembroModel.fromEntity(membro);
-    datasource.atualizarMembro(model);
+    await datasource.atualizarMembro(model);
   }
 
   @override
@@ -61,7 +61,7 @@ class MembroRepositoryImpl implements MembroRepository {
   }
 
   @override
-  void removerMembro(String numero) {
-    datasource.removerMembro(numero);
+  Future<void> removerMembro(String numero) async {
+    await datasource.removerMembro(numero);
   }
 }

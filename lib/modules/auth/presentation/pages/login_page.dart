@@ -51,9 +51,15 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          Image.asset(
+                            'assets/images/centelha.png',
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.contain,
+                          ),
                           // Logo
                           Image.asset(
-                            'assets/images/centelha_new.png',
+                            'assets/images/claudia.jpeg',
                             width: 80,
                             height: 80,
                             fit: BoxFit.contain,
@@ -61,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(height: 32),
                           // Título
                           const Text(
-                            'Bem-vindo',
+                            'Bem-vindo a Claudia',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,

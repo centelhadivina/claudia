@@ -1,233 +1,80 @@
-# Estrutura do Projeto - Centelha Claudia
+# Arquitetura do Projeto - Centelha Claudia
 
-## 📁 Estrutura de Diretórios Completa
+## Visão geral
 
-```
-centelha_claudia/
-│
-├── lib/
-│   ├── main.dart                                    # Ponto de entrada da aplicação
-│   │
-│   ├── core/                                        # 🔧 NÚCLEO COMPARTILHADO
-│   │   ├── di/
-│   │   │   └── injection_container.dart             # Configuração de injeção de dependências
-│   │   ├── error/
-│   │   │   └── failures.dart                        # Classes de erro padronizadas
-│   │   └── utils/
-│   │       └── either.dart                          # Helper para Either<Left, Right>
-│   │
-│   └── modules/                                     # 📦 MÓDULOS DA APLICAÇÃO
-│       │
-│       └── cadastro/                                # MÓDULO DE CADASTRO
-│           │
-│           ├── data/                                # 💾 CAMADA DE DADOS
-│           │   ├── datasources/
-│           │   │   └── usuario_datasource.dart      # Interface + Mock (preparado para API)
-│           │   ├── models/
-│           │   │   └── usuario_model.dart           # Model com toJson/fromJson
-│           │   └── repositories/
-│           │       └── usuario_repository_impl.dart # Implementação do repositório
-│           │
-│           ├── domain/                              # 🎯 CAMADA DE DOMÍNIO (Regras de Negócio)
-│           │   ├── entities/
-│           │   │   └── usuario.dart                 # Entidade pura de negócio
-│           │   └── repositories/
-│           │       └── usuario_repository.dart      # Interface do repositório
-│           │
-│           └── presentation/                        # 🎨 CAMADA DE APRESENTAÇÃO
-│               ├── bloc/
-│               │   ├── usuario_bloc.dart            # Lógica de gerenciamento de estado
-│               │   ├── usuario_event.dart           # Eventos do usuário
-│               │   └── usuario_state.dart           # Estados da UI
-│               └── pages/
-│                   ├── usuario_list_page.dart       # Tela de listagem
-│                   └── usuario_form_page.dart       # Tela de cadastro/edição
-│
-├── pubspec.yaml                                     # Dependências do projeto
-├── README.md                                        # Documentação principal
-└── DOCUMENTATION.md                                 # Documentação detalhada
+O projeto usa arquitetura modular com separação por camadas (presentation, domain e data) para manter baixo acoplamento e facilitar evolução por contexto de negócio.
+
+## Estrutura atual de código
+
+```text
+lib/
+├── core/
+│   ├── constants/
+│   ├── di/
+│   ├── error/
+│   ├── navigation/
+│   ├── services/
+│   ├── theme/
+│   └── utils/
+└── modules/
+       ├── auth/
+       ├── cadastro/
+       ├── consultas/
+       ├── cursos/
+       ├── grupos_acoes_sociais/
+       ├── grupos_tarefas/
+       ├── grupos_trabalhos_espirituais/
+       ├── home/
+       ├── membros/
+       ├── organizacao/
+       ├── sacramentos/
+       └── usuarios_sistema/
 ```
 
-## 🔄 Fluxo de Dados
+## Padrão de módulo
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        PRESENTATION LAYER                        │
-│  ┌────────────────┐          ┌──────────────────────────────┐  │
-│  │  Usuario Pages │  ◄────►  │      Usuario BLoC            │  │
-│  │  - List        │          │  Events ──► Logic ──► States │  │
-│  │  - Form        │          │                              │  │
-│  └────────────────┘          └──────────────────────────────┘  │
-│                                         │                        │
-└─────────────────────────────────────────┼────────────────────────┘
-                                          │
-                                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                         DOMAIN LAYER                             │
-│                    ┌────────────────────┐                        │
-│                    │  Usuario Entity    │                        │
-│                    │  - Business Rules  │                        │
-│                    └────────────────────┘                        │
-│                              │                                   │
-│                    ┌────────────────────┐                        │
-│                    │ Repository Interface│                       │
-│                    └────────────────────┘                        │
-└─────────────────────────────────────────┼────────────────────────┘
-                                          │
-                                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                          DATA LAYER                              │
-│                  ┌──────────────────────────┐                    │
-│                  │ Repository Implementation│                    │
-│                  └──────────────────────────┘                    │
-│                              │                                   │
-│                  ┌──────────────────────────┐                    │
-│                  │   Usuario Datasource     │                    │
-│                  │   - Mock (Atual)         │                    │
-│                  │   - Remote (Futuro)      │                    │
-│                  └──────────────────────────┘                    │
-│                              │                                   │
-│         ┌────────────────────┴────────────────────┐             │
-│         ▼                                          ▼             │
-│  ┌─────────────┐                          ┌─────────────┐       │
-│  │ Mock Data   │                          │  API REST   │       │
-│  │ (Memória)   │                          │  (Futuro)   │       │
-│  └─────────────┘                          └─────────────┘       │
-└─────────────────────────────────────────────────────────────────┘
+Cada módulo evolui no padrão:
+
+- presentation: páginas, bloc/cubit, estados e eventos
+- domain: entidades, regras e contratos de repositório
+- data: models, datasources e implementação de repositórios
+
+Observação:
+
+Alguns módulos ainda não têm todas as camadas completas, o que é esperado durante evolução incremental.
+
+## Fluxo de dependências
+
+```text
+presentation -> domain <- data
 ```
 
-## 🎯 Princípios Aplicados
+- Domain não depende de Flutter nem de detalhes de infraestrutura.
+- Data implementa contratos definidos em domain.
+- Presentation orquestra interação de interface e estado.
 
-### 1. **Separation of Concerns**
+## Componentes transversais
 
-Cada camada tem sua responsabilidade específica:
+- Injeção de dependências centralizada em core/di.
+- Serviços compartilhados em core/services (incluindo Supabase).
+- Navegação e tema centralizados em core/navigation e core/theme.
+- Tratamento de falhas e utilitários comuns em core/error e core/utils.
 
-- **Presentation**: UI e interação com usuário
-- **Domain**: Regras de negócio puras
-- **Data**: Acesso e manipulação de dados
+## Diretrizes de evolução
 
-### 2. **Dependency Rule**
+1. Novas funcionalidades devem nascer dentro de um módulo, evitando espalhar regra de negócio em core.
+2. Integrações externas devem entrar por data/datasources com contrato no domain.
+3. UI deve consumir casos de uso/serviços de domínio, nunca acessar infraestrutura diretamente.
+4. Preferir consistência por módulo antes de expandir novos módulos.
 
-As dependências apontam sempre para dentro:
+## Riscos técnicos atuais
 
-```
-Presentation → Domain ← Data
-```
+- Cobertura de testes ainda limitada para módulos críticos.
+- Diferença de maturidade entre módulos (alguns com menos camadas implementadas).
+- Parte da documentação histórica estava misturada com guias ativos.
 
-### 3. **Dependency Injection**
+## Referências
 
-Uso do GetIt para inversão de controle:
-
-```dart
-// Registrar
-sl.registerLazySingleton<Repository>(() => RepositoryImpl());
-
-// Usar
-final repository = sl<Repository>();
-```
-
-## 📊 Estados do BLoC
-
-```
-┌──────────────┐
-│   Initial    │  ← Estado inicial
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│   Loading    │  ← Carregando dados
-└──────┬───────┘
-       │
-       ├──────────────┐
-       ▼              ▼
-┌──────────────┐  ┌──────────────┐
-│   Loaded     │  │    Error     │
-│  (Success)   │  │   (Failure)  │
-└──────────────┘  └──────────────┘
-```
-
-## 🔌 Preparação para Microserviços
-
-### Estrutura Modular Extensível
-
-```
-lib/modules/
-│
-├── cadastro/           ✅ Implementado
-│   ├── data/
-│   ├── domain/
-│   └── presentation/
-│
-├── vendas/             🔜 Próximo
-│   ├── data/
-│   ├── domain/
-│   └── presentation/
-│
-├── estoque/            🔜 Futuro
-│   ├── data/
-│   ├── domain/
-│   └── presentation/
-│
-└── relatorios/         🔜 Futuro
-    ├── data/
-    ├── domain/
-    └── presentation/
-```
-
-### Vantagens da Arquitetura
-
-✅ **Independência**: Cada módulo pode ser desenvolvido separadamente
-✅ **Testabilidade**: Camadas desacopladas facilitam testes
-✅ **Manutenibilidade**: Mudanças isoladas por módulo
-✅ **Escalabilidade**: Fácil adicionar novos módulos
-✅ **Substituibilidade**: Trocar implementações sem afetar outras camadas
-
-## 🛠️ Tecnologias por Camada
-
-### Presentation
-
-- **flutter_bloc**: Gerenciamento de estado
-- **equatable**: Comparação de estados
-
-### Domain
-
-- **equatable**: Comparação de entidades
-
-### Data
-
-- **dio**: HTTP client (preparado)
-- **uuid**: Geração de IDs
-
-### Core
-
-- **get_it**: Injeção de dependências
-
-## 📝 Convenções de Nomenclatura
-
-### Arquivos
-
-- `snake_case.dart` para todos os arquivos
-- Sufixos descritivos: `_page.dart`, `_bloc.dart`, `_model.dart`
-
-### Classes
-
-- `PascalCase` para classes
-- Sufixos: `Page`, `Bloc`, `Event`, `State`, `Model`, `Entity`
-
-### Variáveis e Funções
-
-- `camelCase` para variáveis e funções
-- Português para domínio de negócio
-- Inglês para código técnico
-
-## 🎓 Aprendizados e Boas Práticas
-
-1. **Sempre use const quando possível** - Melhora performance
-2. **Valide dados em múltiplas camadas** - Segurança
-3. **Use Either para resultados** - Tratamento de erros explícito
-4. **Mantenha BLoCs pequenos** - Um BLoC por feature
-5. **Datasource mockado primeiro** - Desenvolvimento paralelo UI/API
-
----
-
-**Esta estrutura está pronta para crescer! 🚀**
+- Visão operacional consolidada: documentação/DOCUMENTATION.md
+- Plano de melhorias: documentação/ROADMAP_MELHORIAS.md
+- Setup Supabase: SUPABASE_SETUP.md
