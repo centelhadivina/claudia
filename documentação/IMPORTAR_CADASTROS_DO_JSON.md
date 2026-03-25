@@ -68,7 +68,7 @@ DATA DO CADASTRO         → data_cadastro
 ### Antes de importar:
 
 1. **Backup**: Faça backup dos dados atuais do Supabase (se houver dados importantes)
-2. **RLS**: Certifique-se de que o RLS está desabilitado ou com políticas corretas (veja [RESOLVER_PROBLEMA_2_USUARIOS.md](RESOLVER_PROBLEMA_2_USUARIOS.md))
+2. **RLS**: Certifique-se de que o RLS está desabilitado ou com políticas corretas (veja [SUPABASE_SETUP.md](../SUPABASE_SETUP.md))
 
 ### Após a importação:
 
@@ -92,7 +92,7 @@ DATA DO CADASTRO         → data_cadastro
 
 - Verifique as políticas RLS (veja documentação acima)
 - Confirme que está autenticado no sistema
-- Verifique se a tabela `usuarios` existe no Supabase
+- Verifique se a tabela `cadastro` existe no Supabase
 
 ### "Muitos duplicados"
 
@@ -125,7 +125,7 @@ Após a importação bem-sucedida:
 
 ```
 🔍 [CADASTRO] Carregando usuários do Supabase...
-🔍 [DATASOURCE] Buscando usuários da tabela "usuarios"...
+🔍 [DATASOURCE] Buscando usuários da tabela "cadastro"...
 📊 [DATASOURCE] Response length: 2254
 ✅ [DATASOURCE] 2254 usuários convertidos com sucesso
 ✅ [CADASTRO] 2254 usuários carregados do Supabase

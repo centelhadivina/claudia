@@ -365,6 +365,6 @@ Para integrar essas notas com o cálculo do ranking, será necessário:
 
 Para dúvidas ou problemas com as interfaces de lançamento de notas, consulte:
 
-- `SISTEMA_PONTO_CRIADO.md` - Visão geral do sistema
-- `STATUS_SISTEMA_PONTOS.md` - Status detalhado de cada nota
+- `ROADMAP_MELHORIAS.md` - Prioridades e evolução técnica
+- `GUIA_INTEGRACAO_MENU.md` - Integração das telas ao fluxo principal
 - `/scripts/criar_tabelas_notas_manuais.sql` - Schema das tabelas

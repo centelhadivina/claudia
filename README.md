@@ -55,6 +55,7 @@ flutter run -d chrome
 - Setup de Supabase: SUPABASE_SETUP.md
 - Guia consolidado do projeto: documentação/DOCUMENTATION.md
 - Roadmap de melhorias: documentação/ROADMAP_MELHORIAS.md
+- Bugs e melhorias mapeados por módulo: documentação/RELATORIO_BUGS_MELHORIAS.md
 
 ## Estado atual da documentação
 
