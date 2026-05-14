@@ -483,6 +483,8 @@ class _AppDrawer extends StatelessWidget {
       'event': Icons.event,
       'event_busy': Icons.event_busy,
       'remove': Icons.remove,
+      'auto_awesome': Icons.auto_awesome,
+      'spa': Icons.spa,
     };
 
     return iconMap[iconName] ?? Icons.circle;
@@ -528,13 +530,26 @@ class _AppDrawer extends StatelessWidget {
       '/sistema-ponto/importar-calendario':
           '/sistema-ponto/importar-calendario',
       '/sistema-ponto/importar-presencas': '/sistema-ponto/importar-presencas',
+      '/sistema-ponto/avaliacoes': '/sistema-ponto/avaliacoes',
       '/sistema-ponto/rankings': '/sistema-ponto/rankings',
+      '/sistema-ponto/relatorios': '/sistema-ponto/relatorios',
 
       // Usuários Sistema
       '/usuarios-sistema/cadastrar': '/usuarios-sistema/cadastrar',
+      '/usuarios-sistema/excluir': '/usuarios-sistema/excluir',
       '/usuarios-sistema/listar': '/usuarios-sistema/listar',
+      '/usuarios-sistema/acessos': '/usuarios-sistema/acessos',
 
       // Organização
+      '/organizacao/gerenciar': '/organizacao/gerenciar',
+      '/organizacao/nucleos': '/organizacao/nucleos',
+      '/organizacao/dias-sessao': '/organizacao/dias-sessao',
+      '/organizacao/grupos-tarefa': '/organizacao/grupos-tarefa',
+      '/organizacao/grupos-acao-social': '/organizacao/grupos-acao-social',
+      '/organizacao/grupos-trabalho-espiritual':
+          '/organizacao/grupos-trabalho-espiritual',
+      '/organizacao/classificacoes-mediunicas':
+          '/organizacao/classificacoes-mediunicas',
       '/organizacao/incluir-nucleo': '/organizacao/gerenciar',
       '/organizacao/excluir-nucleo': '/organizacao/gerenciar',
       '/organizacao/incluir-dia-sessao': '/organizacao/gerenciar',
@@ -549,26 +564,6 @@ class _AppDrawer extends StatelessWidget {
           '/organizacao/gerenciar',
     };
 
-    if (routeMap.containsKey(route)) {
-      Get.toNamed(routeMap[route]!);
-      return;
-    }
-
-    // Para outras rotas, mostra dialog
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Página em Desenvolvimento'),
-        content: Text(
-          'Rota: $route\n\nEm breve essa funcionalidade estará disponível.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
+    Get.toNamed(routeMap[route] ?? route);
   }
 }

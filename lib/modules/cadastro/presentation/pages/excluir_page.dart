@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import '../../domain/entities/usuario.dart';
 import '../controllers/cadastro_controller.dart';
@@ -16,7 +17,6 @@ class ExcluirPage extends StatefulWidget {
 
 class _ExcluirPageState extends State<ExcluirPage> {
   final controller = Get.find<CadastroController>();
-  final authBloc = Get.find<AuthBloc>();
 
   final numeroController = TextEditingController();
   Usuario? usuarioParaExcluir;
@@ -24,7 +24,7 @@ class _ExcluirPageState extends State<ExcluirPage> {
   @override
   void initState() {
     super.initState();
-    _verificarPermissao();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _verificarPermissao());
   }
 
   @override
@@ -34,7 +34,7 @@ class _ExcluirPageState extends State<ExcluirPage> {
   }
 
   void _verificarPermissao() {
-    final state = authBloc.state;
+    final state = context.read<AuthBloc>().state;
     if (state is! AuthAuthenticated) {
       Get.back();
       Get.snackbar(
@@ -204,7 +204,10 @@ class _ExcluirPageState extends State<ExcluirPage> {
                     children: [
                       const Text(
                         'Buscar Cadastro',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 16),
                       Row(
@@ -288,20 +291,57 @@ class _ExcluirPageState extends State<ExcluirPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildInfoRow('Nome', usuarioParaExcluir!.nome),
-                                  _buildInfoRow('CPF', _formatarCPF(usuarioParaExcluir!.cpf)),
-                                  if (usuarioParaExcluir!.dataNascimento != null)
-                                    _buildInfoRow('Data Nasc.', _formatarData(usuarioParaExcluir!.dataNascimento!)),
-                                  _buildInfoRow('Telefone', _formatarTelefone(usuarioParaExcluir!.telefoneCelular ?? '')),
-                                  _buildInfoRow('E-mail', usuarioParaExcluir!.email ?? ''),
+                                  _buildInfoRow(
+                                    'Nome',
+                                    usuarioParaExcluir!.nome,
+                                  ),
+                                  _buildInfoRow(
+                                    'CPF',
+                                    _formatarCPF(usuarioParaExcluir!.cpf),
+                                  ),
+                                  if (usuarioParaExcluir!.dataNascimento !=
+                                      null)
+                                    _buildInfoRow(
+                                      'Data Nasc.',
+                                      _formatarData(
+                                        usuarioParaExcluir!.dataNascimento!,
+                                      ),
+                                    ),
+                                  _buildInfoRow(
+                                    'Telefone',
+                                    _formatarTelefone(
+                                      usuarioParaExcluir!.telefoneCelular ?? '',
+                                    ),
+                                  ),
+                                  _buildInfoRow(
+                                    'E-mail',
+                                    usuarioParaExcluir!.email ?? '',
+                                  ),
                                   const SizedBox(height: 16),
-                                  _buildInfoRow('Endereço', usuarioParaExcluir!.endereco ?? ''),
-                                  _buildInfoRow('Bairro', usuarioParaExcluir!.bairro ?? ''),
-                                  _buildInfoRow('Cidade', '${usuarioParaExcluir!.cidade ?? ''}/${usuarioParaExcluir!.estado ?? ''}'),
+                                  _buildInfoRow(
+                                    'Endereço',
+                                    usuarioParaExcluir!.endereco ?? '',
+                                  ),
+                                  _buildInfoRow(
+                                    'Bairro',
+                                    usuarioParaExcluir!.bairro ?? '',
+                                  ),
+                                  _buildInfoRow(
+                                    'Cidade',
+                                    '${usuarioParaExcluir!.cidade ?? ''}/${usuarioParaExcluir!.estado ?? ''}',
+                                  ),
                                   const SizedBox(height: 16),
-                                  _buildInfoRow('Núcleo', usuarioParaExcluir!.nucleoPertence ?? ''),
+                                  _buildInfoRow(
+                                    'Núcleo',
+                                    usuarioParaExcluir!.nucleoPertence ?? '',
+                                  ),
                                   if (usuarioParaExcluir!.dataCadastro != null)
-                                    _buildInfoRow('Data Cadastro', _formatarData(usuarioParaExcluir!.dataCadastro!)),
+                                    _buildInfoRow(
+                                      'Data Cadastro',
+                                      _formatarData(
+                                        usuarioParaExcluir!.dataCadastro!,
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
@@ -311,7 +351,10 @@ class _ExcluirPageState extends State<ExcluirPage> {
                             width: double.infinity,
                             child: ElevatedButton.icon(
                               onPressed: _excluir,
-                              icon: const Icon(Icons.delete_forever, color: Colors.white),
+                              icon: const Icon(
+                                Icons.delete_forever,
+                                color: Colors.white,
+                              ),
                               label: const Text(
                                 'Excluir Este Cadastro',
                                 style: TextStyle(
@@ -322,7 +365,9 @@ class _ExcluirPageState extends State<ExcluirPage> {
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                               ),
                             ),
                           ),
@@ -351,9 +396,7 @@ class _ExcluirPageState extends State<ExcluirPage> {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );

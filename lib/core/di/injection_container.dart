@@ -36,6 +36,11 @@ import '../../modules/usuarios_sistema/data/datasources/usuario_sistema_supabase
 import '../../modules/usuarios_sistema/data/repositories/usuario_sistema_repository.dart';
 import '../../modules/usuarios_sistema/data/repositories/usuario_sistema_repository_imp.dart';
 import '../../modules/usuarios_sistema/presentation/controllers/usuario_sistema_controller.dart';
+import '../../modules/organizacao/data/datasources/nucleo_datasource.dart';
+import '../../modules/organizacao/data/datasources/organizacao_centelha_datasource.dart';
+import '../../modules/organizacao/data/repositories/organizacao_centelha_repository.dart';
+import '../../modules/organizacao/presentation/controllers/nucleo_controller.dart';
+import '../../modules/organizacao/presentation/controllers/organizacao_centelha_controller.dart';
 import '../services/supabase_service.dart';
 
 final sl = GetIt.instance;
@@ -142,6 +147,21 @@ Future<void> init() async {
     () => UsuarioSistemaSupabaseDatasource(sl()),
   );
 
+  // ============ ORGANIZACAO (NÚCLEOS) ============
+
+  // Datasource - SUPABASE
+  sl.registerLazySingleton<NucleoSupabaseDatasource>(
+    () => NucleoSupabaseDatasource(sl()),
+  );
+
+  sl.registerLazySingleton<OrganizacaoCentelhaDatasource>(
+    () => OrganizacaoCentelhaDatasourceImpl(),
+  );
+
+  sl.registerLazySingleton<OrganizacaoCentelhaRepository>(
+    () => OrganizacaoCentelhaRepositoryImpl(sl()),
+  );
+
   // ============ GETX CONTROLLERS ============
   // Registrar depois de todos os datasources e repositories
 
@@ -154,4 +174,6 @@ Future<void> init() async {
     GrupoTrabalhoEspiritualController(sl<GrupoTrabalhoEspiritualRepository>()),
   );
   Get.put(UsuarioSistemaController(sl<UsuarioSistemaRepository>()));
+  Get.put(NucleoController(sl<NucleoSupabaseDatasource>()));
+  Get.put(OrganizacaoCentelhaController(sl<OrganizacaoCentelhaRepository>()));
 }

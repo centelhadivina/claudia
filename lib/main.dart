@@ -5,6 +5,7 @@ import 'package:sistema_ponto/sistema_ponto.dart';
 
 import 'core/di/auth_bloc_binding.dart';
 import 'core/di/injection_container.dart' as di;
+import 'core/navigation/placeholder_page.dart';
 import 'core/services/supabase_service.dart';
 import 'core/theme/app_theme.dart';
 import 'modules/auth/presentation/bloc/auth_bloc.dart';
@@ -73,9 +74,19 @@ class MyApp extends StatelessWidget {
         // Rotas GetX
         getPages: [
           GetPage(name: '/cadastrar', page: () => const CadastrarPage()),
+          GetPage(
+            name: '/cadastros/cadastrar',
+            page: () => const CadastrarPage(),
+          ),
           GetPage(name: '/pesquisar', page: () => const PesquisarPage()),
+          GetPage(
+            name: '/cadastros/pesquisar',
+            page: () => const PesquisarPage(),
+          ),
           GetPage(name: '/editar', page: () => const EditarPage()),
+          GetPage(name: '/cadastros/editar', page: () => const EditarPage()),
           GetPage(name: '/excluir', page: () => const ExcluirPage()),
+          GetPage(name: '/cadastros/excluir', page: () => const ExcluirPage()),
           GetPage(
             name: '/importar-excel',
             page: () => const ImportarExcelPage(),
@@ -148,6 +159,55 @@ class MyApp extends StatelessWidget {
             page: () => const RelatoriosGrupoTrabalhoEspiritualPage(),
           ),
 
+          // Sacramentos
+          GetPage(
+            name: '/sacramentos/batismo',
+            page: () => const PlaceholderPage(title: 'Batismo'),
+          ),
+          GetPage(
+            name: '/sacramentos/casamento',
+            page: () => const PlaceholderPage(title: 'Casamento'),
+          ),
+          GetPage(
+            name: '/sacramentos/jogo-orixa',
+            page: () => const PlaceholderPage(title: 'Jogo de Orixá'),
+          ),
+          GetPage(
+            name: '/sacramentos/camarinhas',
+            page: () => const PlaceholderPage(title: 'Camarinhas'),
+          ),
+          GetPage(
+            name: '/sacramentos/coroacao',
+            page: () => const PlaceholderPage(title: 'Coroação Sacerdotal'),
+          ),
+          GetPage(
+            name: '/sacramentos/relatorios',
+            page: () =>
+                const PlaceholderPage(title: 'Relatórios de Sacramentos'),
+          ),
+
+          // Cursos e Treinamentos
+          GetPage(
+            name: '/cursos/criar',
+            page: () => const PlaceholderPage(title: 'Criar Novo Curso'),
+          ),
+          GetPage(
+            name: '/cursos/nova-turma',
+            page: () => const PlaceholderPage(title: 'Abrir Nova Turma'),
+          ),
+          GetPage(
+            name: '/cursos/inscricao',
+            page: () => const PlaceholderPage(title: 'Inscrição em Curso'),
+          ),
+          GetPage(
+            name: '/cursos/lancar-notas',
+            page: () => const PlaceholderPage(title: 'Lançar Notas'),
+          ),
+          GetPage(
+            name: '/cursos/relatorios',
+            page: () => const PlaceholderPage(title: 'Relatórios de Cursos'),
+          ),
+
           // Sistema de Ponto
           GetPage(
             name: '/sistema-ponto/importar-calendario',
@@ -158,8 +218,17 @@ class MyApp extends StatelessWidget {
             page: () => const ImportarPresencaPage(),
           ),
           GetPage(
+            name: '/sistema-ponto/avaliacoes',
+            page: () => const LancarConceitosPage(),
+          ),
+          GetPage(
             name: '/sistema-ponto/rankings',
             page: () => const RankingMensalPage(),
+          ),
+          GetPage(
+            name: '/sistema-ponto/relatorios',
+            page: () =>
+                const PlaceholderPage(title: 'Relatórios do Sistema de Ponto'),
           ),
 
           // Usuários Sistema
@@ -170,6 +239,14 @@ class MyApp extends StatelessWidget {
           GetPage(
             name: '/usuarios-sistema/listar',
             page: () => const GerenciarUsuarioSistemaPage(),
+          ),
+          GetPage(
+            name: '/usuarios-sistema/excluir',
+            page: () => const GerenciarUsuarioSistemaPage(),
+          ),
+          GetPage(
+            name: '/usuarios-sistema/acessos',
+            page: () => const PlaceholderPage(title: 'Acessos de Usuários'),
           ),
 
           // Organização

@@ -239,6 +239,11 @@ class AppMenus {
       nivelRequerido: NivelAcesso.nivel2,
       subItems: [
         const MenuItem(
+          title: 'Gerenciar Organização',
+          icon: 'corporate_fare',
+          route: '/organizacao/gerenciar',
+        ),
+        const MenuItem(
           title: 'Gerenciar Núcleos',
           icon: 'location_city',
           route: '/organizacao/nucleos',
@@ -268,6 +273,36 @@ class AppMenus {
           icon: 'auto_awesome',
           route: '/organizacao/classificacoes-mediunicas',
         ),
+        const MenuItem(
+          title: 'Incluir/Excluir Núcleo',
+          icon: 'add_business',
+          route: '/organizacao/incluir-nucleo',
+          nivelRequerido: NivelAcesso.nivel4,
+        ),
+        const MenuItem(
+          title: 'Incluir/Excluir Dia de Sessão',
+          icon: 'event',
+          route: '/organizacao/incluir-dia-sessao',
+          nivelRequerido: NivelAcesso.nivel4,
+        ),
+        const MenuItem(
+          title: 'Incluir/Excluir Grupo-Tarefa',
+          icon: 'add',
+          route: '/organizacao/incluir-grupo-tarefa',
+          nivelRequerido: NivelAcesso.nivel4,
+        ),
+        const MenuItem(
+          title: 'Incluir/Excluir Grupo de Ação Social',
+          icon: 'add',
+          route: '/organizacao/incluir-grupo-acao-social',
+          nivelRequerido: NivelAcesso.nivel4,
+        ),
+        const MenuItem(
+          title: 'Incluir/Excluir Grupo de Trabalho Espiritual',
+          icon: 'add',
+          route: '/organizacao/incluir-grupo-trabalho-espiritual',
+          nivelRequerido: NivelAcesso.nivel4,
+        ),
       ],
     ),
     MenuItem(
@@ -294,63 +329,6 @@ class AppMenus {
           title: 'Ver Acessos de Usuários',
           icon: 'analytics',
           route: '/usuarios-sistema/acessos',
-        ),
-      ],
-    ),
-    MenuItem(
-      title: 'ORGANIZAÇÃO DA CENTELHA',
-      icon: 'corporate_fare',
-      nivelRequerido: NivelAcesso.nivel4,
-      subItems: [
-        const MenuItem(
-          title: 'Incluir Núcleo',
-          icon: 'add_business',
-          route: '/organizacao/incluir-nucleo',
-        ),
-        const MenuItem(
-          title: 'Excluir Núcleo',
-          icon: 'remove_circle',
-          route: '/organizacao/excluir-nucleo',
-        ),
-        const MenuItem(
-          title: 'Incluir Dia de Sessão',
-          icon: 'event',
-          route: '/organizacao/incluir-dia-sessao',
-        ),
-        const MenuItem(
-          title: 'Excluir Dia de Sessão',
-          icon: 'event_busy',
-          route: '/organizacao/excluir-dia-sessao',
-        ),
-        const MenuItem(
-          title: 'Incluir Grupo-Tarefa',
-          icon: 'add',
-          route: '/organizacao/incluir-grupo-tarefa',
-        ),
-        const MenuItem(
-          title: 'Excluir Grupo-Tarefa',
-          icon: 'remove',
-          route: '/organizacao/excluir-grupo-tarefa',
-        ),
-        const MenuItem(
-          title: 'Incluir Grupo de Ação Social',
-          icon: 'add',
-          route: '/organizacao/incluir-grupo-acao-social',
-        ),
-        const MenuItem(
-          title: 'Excluir Grupo de Ação Social',
-          icon: 'remove',
-          route: '/organizacao/excluir-grupo-acao-social',
-        ),
-        const MenuItem(
-          title: 'Incluir Grupo de Trabalho Espiritual',
-          icon: 'add',
-          route: '/organizacao/incluir-grupo-trabalho-espiritual',
-        ),
-        const MenuItem(
-          title: 'Excluir Grupo de Trabalho Espiritual',
-          icon: 'remove',
-          route: '/organizacao/excluir-grupo-trabalho-espiritual',
         ),
       ],
     ),

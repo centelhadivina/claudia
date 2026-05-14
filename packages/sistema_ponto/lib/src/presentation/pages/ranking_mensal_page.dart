@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/repositories/calendario_repository.dart';
@@ -514,6 +513,25 @@ class _RankingMensalPageState extends State<RankingMensalPage> {
   }
 
   String _nomeMes(int mes) {
-    return DateFormat.MMMM('pt_BR').format(DateTime(2000, mes));
+    const meses = [
+      'janeiro',
+      'fevereiro',
+      'março',
+      'abril',
+      'maio',
+      'junho',
+      'julho',
+      'agosto',
+      'setembro',
+      'outubro',
+      'novembro',
+      'dezembro',
+    ];
+
+    if (mes < 1 || mes > meses.length) {
+      return '';
+    }
+
+    return meses[mes - 1];
   }
 }

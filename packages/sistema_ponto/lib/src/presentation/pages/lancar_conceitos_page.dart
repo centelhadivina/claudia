@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Página para líderes lançarem conceitos de Grupo-Tarefa (Nota C) e Ação Social (Nota D)
@@ -440,7 +439,26 @@ class _LancarConceitosPageState extends State<LancarConceitosPage> {
   }
 
   String _nomeMes(int mes) {
-    return DateFormat.MMMM('pt_BR').format(DateTime(2000, mes));
+    const meses = [
+      'janeiro',
+      'fevereiro',
+      'março',
+      'abril',
+      'maio',
+      'junho',
+      'julho',
+      'agosto',
+      'setembro',
+      'outubro',
+      'novembro',
+      'dezembro',
+    ];
+
+    if (mes < 1 || mes > meses.length) {
+      return '';
+    }
+
+    return meses[mes - 1];
   }
 
   List<Map<String, dynamic>> _obterMembrosMockPorGrupo(String grupoId) {
