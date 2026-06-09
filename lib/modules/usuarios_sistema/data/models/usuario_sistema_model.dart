@@ -13,6 +13,7 @@ class UsuarioSistemaModel extends UsuarioSistema {
     required super.ativo,
     required super.dataCriacao,
     super.dataUltimaAlteracao,
+    super.ultimoAcesso,
     super.observacoes,
   });
 
@@ -28,6 +29,7 @@ class UsuarioSistemaModel extends UsuarioSistema {
       ativo: entity.ativo,
       dataCriacao: entity.dataCriacao,
       dataUltimaAlteracao: entity.dataUltimaAlteracao,
+      ultimoAcesso: entity.ultimoAcesso,
       observacoes: entity.observacoes,
     );
   }
@@ -46,6 +48,9 @@ class UsuarioSistemaModel extends UsuarioSistema {
       dataUltimaAlteracao: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)
           : null,
+      ultimoAcesso: json['ultimo_acesso'] != null
+          ? DateTime.parse(json['ultimo_acesso'] as String)
+          : null,
       observacoes: json['observacoes'] as String?,
     );
   }
@@ -60,6 +65,7 @@ class UsuarioSistemaModel extends UsuarioSistema {
       'senha_hash': senha,
       'nivel_permissao': nivelPermissao,
       'ativo': ativo,
+      'ultimo_acesso': ultimoAcesso?.toIso8601String(),
       'created_at': dataCriacao.toIso8601String(),
       'updated_at': dataUltimaAlteracao?.toIso8601String(),
       'observacoes': observacoes,

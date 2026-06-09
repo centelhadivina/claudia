@@ -50,6 +50,11 @@ class _CadastrarPageState extends State<CadastrarPage> {
   final nomeResponsavelController = TextEditingController();
   final telefoneResponsavelController = TextEditingController();
   final emailResponsavelController = TextEditingController();
+  final dataBatismoController = TextEditingController();
+  final mediumCelebranteBatismoController = TextEditingController();
+  final guiaCelebranteBatismoController = TextEditingController();
+  final padrinhoBatismoController = TextEditingController();
+  final madrinhaBatismoController = TextEditingController();
 
   // Dropdowns
   String? nucleoSelecionado;
@@ -58,6 +63,7 @@ class _CadastrarPageState extends State<CadastrarPage> {
   String? tipoSanguineoSelecionado;
 
   DateTime? dataNascimento;
+  DateTime? dataBatismo;
 
   @override
   Widget build(BuildContext context) {
@@ -273,6 +279,54 @@ class _CadastrarPageState extends State<CadastrarPage> {
 
               const SizedBox(height: 24),
 
+              // Batismo
+              _buildSecaoTitulo('Batismo'),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildCampoData(
+                      controller: dataBatismoController,
+                      label: 'Data de Batismo',
+                      onTap: _selecionarDataBatismo,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildCampoTexto(
+                      controller: mediumCelebranteBatismoController,
+                      label: 'Medium Celebrante',
+                      icon: Icons.person,
+                    ),
+                  ),
+                ],
+              ),
+              _buildCampoTexto(
+                controller: guiaCelebranteBatismoController,
+                label: 'Guia Celebrante',
+                icon: Icons.group,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildCampoTexto(
+                      controller: padrinhoBatismoController,
+                      label: 'Padrinho',
+                      icon: Icons.person_outline,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildCampoTexto(
+                      controller: madrinhaBatismoController,
+                      label: 'Madrinha',
+                      icon: Icons.person_outline,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 24),
+
               // Responsável (se menor de idade)
               _buildSecaoTitulo(
                 'Responsável (obrigatório se menor de 18 anos)',
@@ -483,9 +537,8 @@ class _CadastrarPageState extends State<CadastrarPage> {
     // Verifica nomes similares
     final nomesSimilares = controller.buscarNomesSimilares(nomeController.text);
     if (nomesSimilares.isNotEmpty) {
-      final confirmar = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
+      final confirmar = await Get.dialog<bool>(
+        AlertDialog(
           title: const Text('Nome Similar Encontrado'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -520,14 +573,30 @@ class _CadastrarPageState extends State<CadastrarPage> {
       nome: nomeController.text.trim(),
       cpf: cpfLimpo,
       dataNascimento: dataNascimento!,
-      telefoneCelular: telefoneController.text.replaceAll(RegExp(r'[^\d]'), ''),
+      telefoneCelular: telefoneController.text.replaceAll(
+        RegExp(r'[^0-9]'),
+        '',
+      ),
       email: emailController.text.trim(),
       endereco: enderecoController.text.trim(),
       bairro: bairroController.text.trim(),
       cidade: cidadeController.text.trim(),
       estado: estadoController.text.trim(),
-      cep: cepController.text.replaceAll(RegExp(r'[^\d]'), ''),
+      cep: cepController.text.replaceAll(RegExp(r'[^0-9]'), ''),
       nucleoPertence: nucleoSelecionado ?? '',
+      dataBatismo: dataBatismo,
+      mediumCelebranteBatismo: mediumCelebranteBatismoController.text.isNotEmpty
+          ? mediumCelebranteBatismoController.text.trim()
+          : null,
+      guiaCelebranteBatismo: guiaCelebranteBatismoController.text.isNotEmpty
+          ? guiaCelebranteBatismoController.text.trim()
+          : null,
+      padrinhoBatismo: padrinhoBatismoController.text.isNotEmpty
+          ? padrinhoBatismoController.text.trim()
+          : null,
+      madrinhaBatismo: madrinhaBatismoController.text.isNotEmpty
+          ? madrinhaBatismoController.text.trim()
+          : null,
       // Opcionais
       apelido1: apelido1Controller.text.isNotEmpty
           ? apelido1Controller.text.trim()
@@ -542,7 +611,7 @@ class _CadastrarPageState extends State<CadastrarPage> {
           ? nomeResponsavelController.text.trim()
           : null,
       telefoneResponsavel: telefoneResponsavelController.text.isNotEmpty
-          ? telefoneResponsavelController.text.replaceAll(RegExp(r'[^\d]'), '')
+          ? telefoneResponsavelController.text.replaceAll(RegExp(r'[^0-9]'), '')
           : null,
       emailResponsavel: emailResponsavelController.text.isNotEmpty
           ? emailResponsavelController.text.trim()
@@ -569,6 +638,11 @@ class _CadastrarPageState extends State<CadastrarPage> {
       nomeResponsavelController.clear();
       telefoneResponsavelController.clear();
       emailResponsavelController.clear();
+      dataBatismoController.clear();
+      mediumCelebranteBatismoController.clear();
+      guiaCelebranteBatismoController.clear();
+      padrinhoBatismoController.clear();
+      madrinhaBatismoController.clear();
 
       setState(() {
         nucleoSelecionado = null;
@@ -576,6 +650,7 @@ class _CadastrarPageState extends State<CadastrarPage> {
         sexoSelecionado = null;
         tipoSanguineoSelecionado = null;
         dataNascimento = null;
+        dataBatismo = null;
       });
     }
   }
@@ -586,13 +661,29 @@ class _CadastrarPageState extends State<CadastrarPage> {
       initialDate: DateTime(2000),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
-      locale: const Locale('pt', 'BR'),
     );
 
     if (data != null) {
       setState(() {
         dataNascimento = data;
         dataNascimentoController.text =
+            '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
+      });
+    }
+  }
+
+  Future<void> _selecionarDataBatismo() async {
+    final data = await showDatePicker(
+      context: context,
+      initialDate: dataBatismo ?? DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (data != null) {
+      setState(() {
+        dataBatismo = data;
+        dataBatismoController.text =
             '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
       });
     }

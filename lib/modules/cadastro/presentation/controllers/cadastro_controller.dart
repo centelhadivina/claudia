@@ -379,6 +379,11 @@ class CadastroController extends GetxController {
     errorMessage.value = '';
   }
 
+  String _normalizarNumeroCadastro(String? cadastro) {
+    if (cadastro == null || cadastro.isEmpty) return '';
+    return cadastro.replaceAll(RegExp(r'[^0-9]'), '');
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -395,17 +400,17 @@ class CadastroController extends GetxController {
     searchResults.clear();
 
     if (numero != null && numero.isNotEmpty) {
-      // Busca exata por número
-      final resultado = usuarios
-          .where((u) => u.numeroCadastro == numero)
-          .toList();
+      final consulta = _normalizarNumeroCadastro(numero);
+      final resultado = usuarios.where((u) {
+        final cadastro = _normalizarNumeroCadastro(u.numeroCadastro);
+        return cadastro == consulta || cadastro.endsWith(consulta);
+      }).toList();
       searchResults.value = resultado;
       return;
     }
 
     if (cpf != null && cpf.isNotEmpty) {
-      // Busca exata por CPF
-      final cpfLimpo = cpf.replaceAll(RegExp(r'[^\d]'), '');
+      final cpfLimpo = cpf.replaceAll(RegExp(r'[^0-9]'), '');
       final resultado = usuarios.where((u) => u.cpf == cpfLimpo).toList();
       searchResults.value = resultado;
       return;

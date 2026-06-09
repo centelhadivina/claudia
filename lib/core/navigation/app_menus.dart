@@ -330,6 +330,11 @@ class AppMenus {
           icon: 'analytics',
           route: '/usuarios-sistema/acessos',
         ),
+        const MenuItem(
+          title: 'Logs de Erro do Sistema',
+          icon: 'bug_report',
+          route: '/sistema/erros',
+        ),
       ],
     ),
   ];

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -6,8 +8,10 @@ import 'package:sistema_ponto/sistema_ponto.dart';
 import 'core/di/auth_bloc_binding.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/navigation/placeholder_page.dart';
+import 'core/services/error_log_service.dart';
 import 'core/services/supabase_service.dart';
 import 'core/theme/app_theme.dart';
+import 'modules/admin/presentation/pages/system_error_logs_page.dart';
 import 'modules/auth/presentation/bloc/auth_bloc.dart';
 import 'modules/auth/presentation/bloc/auth_event.dart';
 import 'modules/auth/presentation/bloc/auth_state.dart';
@@ -49,7 +53,23 @@ void main() async {
 
   await di.init();
   AuthBlocBinding.init();
-  runApp(const MyApp());
+
+  FlutterError.onError = (details) {
+    ErrorLogService.instance.logFlutterError(details);
+  };
+
+  WidgetsBinding.instance.platformDispatcher.onError = (error, stack) {
+    ErrorLogService.instance.logError(
+      error,
+      stack,
+      source: 'PlatformDispatcher.onError',
+    );
+    return true;
+  };
+
+  runZonedGuarded(() => runApp(const MyApp()), (error, stack) {
+    ErrorLogService.instance.logError(error, stack, source: 'ZoneGuarded');
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -247,6 +267,10 @@ class MyApp extends StatelessWidget {
           GetPage(
             name: '/usuarios-sistema/acessos',
             page: () => const PlaceholderPage(title: 'Acessos de Usuários'),
+          ),
+          GetPage(
+            name: '/sistema/erros',
+            page: () => const SystemErrorLogsPage(),
           ),
 
           // Organização

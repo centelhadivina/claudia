@@ -217,6 +217,8 @@ class _PesquisarPageState extends State<PesquisarPage> {
                           ),
                         ],
                       ),
+                      onTap: () => _editarCadastro(usuario),
+                      onLongPress: () => _verDetalhes(usuario),
                       isThreeLine: true,
                     ),
                   );
@@ -324,7 +326,7 @@ class _PesquisarPageState extends State<PesquisarPage> {
       return;
     }
 
-    Get.toNamed('/editar', arguments: usuario.numeroCadastro);
+    Get.toNamed('/cadastros/editar', arguments: usuario.numeroCadastro);
   }
 
   void _verDetalhes(Usuario usuario) {

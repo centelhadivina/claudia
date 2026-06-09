@@ -51,12 +51,18 @@ class _EditarPageState extends State<EditarPage> {
   final nomeResponsavelController = TextEditingController();
   final telefoneResponsavelController = TextEditingController();
   final emailResponsavelController = TextEditingController();
+  final dataBatismoController = TextEditingController();
+  final mediumCelebranteBatismoController = TextEditingController();
+  final guiaCelebranteBatismoController = TextEditingController();
+  final padrinhoBatismoController = TextEditingController();
+  final madrinhaBatismoController = TextEditingController();
 
   String? nucleoSelecionado;
   String? estadoCivilSelecionado;
   String? sexoSelecionado;
   String? tipoSanguineoSelecionado;
   DateTime? dataNascimento;
+  DateTime? dataBatismo;
 
   String? usuarioId;
 
@@ -90,6 +96,11 @@ class _EditarPageState extends State<EditarPage> {
     nomeResponsavelController.dispose();
     telefoneResponsavelController.dispose();
     emailResponsavelController.dispose();
+    dataBatismoController.dispose();
+    mediumCelebranteBatismoController.dispose();
+    guiaCelebranteBatismoController.dispose();
+    padrinhoBatismoController.dispose();
+    madrinhaBatismoController.dispose();
     super.dispose();
   }
 
@@ -126,24 +137,41 @@ class _EditarPageState extends State<EditarPage> {
       nomeController.text = usuario.nome;
       cpfController.text = _formatarCPF(usuario.cpf);
       dataNascimento = usuario.dataNascimento;
-      dataNascimentoController.text = usuario.dataNascimento != null ? _formatarData(usuario.dataNascimento!) : '';
-      telefoneController.text = _formatarTelefone(usuario.telefoneCelular ?? '');
+      dataNascimentoController.text = usuario.dataNascimento != null
+          ? _formatarData(usuario.dataNascimento!)
+          : '';
+      telefoneController.text = _formatarTelefone(
+        usuario.telefoneCelular ?? '',
+      );
       emailController.text = usuario.email ?? '';
       enderecoController.text = usuario.endereco ?? '';
       bairroController.text = usuario.bairro ?? '';
       cidadeController.text = usuario.cidade ?? '';
       estadoController.text = usuario.estado ?? '';
       cepController.text = _formatarCEP(usuario.cep ?? '');
-      nucleoSelecionado = usuario.nucleoPertence != null && usuario.nucleoPertence!.isNotEmpty ? usuario.nucleoPertence : null;
+      nucleoSelecionado =
+          usuario.nucleoPertence != null && usuario.nucleoPertence!.isNotEmpty
+          ? usuario.nucleoPertence
+          : null;
 
       apelido1Controller.text = usuario.apelido1 ?? '';
       apelido2Controller.text = usuario.apelido2 ?? '';
       sexoSelecionado = usuario.sexo;
       estadoCivilSelecionado = usuario.estadoCivil;
       tipoSanguineoSelecionado = usuario.tipoSanguineo;
+      dataBatismo = usuario.dataBatismo;
+      dataBatismoController.text = usuario.dataBatismo != null
+          ? _formatarData(usuario.dataBatismo!)
+          : '';
+      mediumCelebranteBatismoController.text =
+          usuario.mediumCelebranteBatismo ?? '';
+      guiaCelebranteBatismoController.text =
+          usuario.guiaCelebranteBatismo ?? '';
+      padrinhoBatismoController.text = usuario.padrinhoBatismo ?? '';
+      madrinhaBatismoController.text = usuario.madrinhaBatismo ?? '';
       nomeResponsavelController.text = usuario.nomeResponsavel ?? '';
-      telefoneResponsavelController.text = usuario.telefoneResponsavel != null 
-          ? _formatarTelefone(usuario.telefoneResponsavel!) 
+      telefoneResponsavelController.text = usuario.telefoneResponsavel != null
+          ? _formatarTelefone(usuario.telefoneResponsavel!)
           : '';
       emailResponsavelController.text = usuario.emailResponsavel ?? '';
     });
@@ -155,13 +183,28 @@ class _EditarPageState extends State<EditarPage> {
       initialDate: dataNascimento ?? DateTime(2000),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
-      locale: const Locale('pt', 'BR'),
     );
 
     if (data != null) {
       setState(() {
         dataNascimento = data;
         dataNascimentoController.text = _formatarData(data);
+      });
+    }
+  }
+
+  Future<void> _selecionarDataBatismo() async {
+    final data = await showDatePicker(
+      context: context,
+      initialDate: dataBatismo ?? DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (data != null) {
+      setState(() {
+        dataBatismo = data;
+        dataBatismoController.text = _formatarData(data);
       });
     }
   }
@@ -193,14 +236,37 @@ class _EditarPageState extends State<EditarPage> {
       estado: estadoController.text.trim(),
       cep: cepController.text.replaceAll(RegExp(r'[^\d]'), ''),
       nucleoPertence: nucleoSelecionado ?? '',
-      apelido1: apelido1Controller.text.isNotEmpty ? apelido1Controller.text.trim() : null,
-      apelido2: apelido2Controller.text.isNotEmpty ? apelido2Controller.text.trim() : null,
+      dataBatismo: dataBatismo,
+      mediumCelebranteBatismo: mediumCelebranteBatismoController.text.isNotEmpty
+          ? mediumCelebranteBatismoController.text.trim()
+          : null,
+      guiaCelebranteBatismo: guiaCelebranteBatismoController.text.isNotEmpty
+          ? guiaCelebranteBatismoController.text.trim()
+          : null,
+      padrinhoBatismo: padrinhoBatismoController.text.isNotEmpty
+          ? padrinhoBatismoController.text.trim()
+          : null,
+      madrinhaBatismo: madrinhaBatismoController.text.isNotEmpty
+          ? madrinhaBatismoController.text.trim()
+          : null,
+      apelido1: apelido1Controller.text.isNotEmpty
+          ? apelido1Controller.text.trim()
+          : null,
+      apelido2: apelido2Controller.text.isNotEmpty
+          ? apelido2Controller.text.trim()
+          : null,
       estadoCivil: estadoCivilSelecionado,
       sexo: sexoSelecionado,
       tipoSanguineo: tipoSanguineoSelecionado,
-      nomeResponsavel: nomeResponsavelController.text.isNotEmpty ? nomeResponsavelController.text.trim() : null,
-      telefoneResponsavel: telefoneResponsavelController.text.isNotEmpty ? telefoneResponsavelController.text.replaceAll(RegExp(r'[^\d]'), '') : null,
-      emailResponsavel: emailResponsavelController.text.isNotEmpty ? emailResponsavelController.text.trim() : null,
+      nomeResponsavel: nomeResponsavelController.text.isNotEmpty
+          ? nomeResponsavelController.text.trim()
+          : null,
+      telefoneResponsavel: telefoneResponsavelController.text.isNotEmpty
+          ? telefoneResponsavelController.text.replaceAll(RegExp(r'[^\d]'), '')
+          : null,
+      emailResponsavel: emailResponsavelController.text.isNotEmpty
+          ? emailResponsavelController.text.trim()
+          : null,
     );
 
     final sucesso = await controller.editar(usuario);
@@ -232,12 +298,18 @@ class _EditarPageState extends State<EditarPage> {
     nomeResponsavelController.clear();
     telefoneResponsavelController.clear();
     emailResponsavelController.clear();
+    dataBatismoController.clear();
+    mediumCelebranteBatismoController.clear();
+    guiaCelebranteBatismoController.clear();
+    padrinhoBatismoController.clear();
+    madrinhaBatismoController.clear();
     setState(() {
       nucleoSelecionado = null;
       estadoCivilSelecionado = null;
       sexoSelecionado = null;
       tipoSanguineoSelecionado = null;
       dataNascimento = null;
+      dataBatismo = null;
     });
   }
 
@@ -289,7 +361,10 @@ class _EditarPageState extends State<EditarPage> {
                     children: [
                       const Text(
                         'Buscar Cadastro',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 16),
                       Row(
@@ -376,7 +451,8 @@ class _EditarPageState extends State<EditarPage> {
                         controller: nomeController,
                         label: 'Nome Completo *',
                         icon: Icons.person,
-                        validator: (v) => v?.isEmpty ?? true ? 'Campo obrigatório' : null,
+                        validator: (v) =>
+                            v?.isEmpty ?? true ? 'Campo obrigatório' : null,
                       ),
                       Row(
                         children: [
@@ -407,8 +483,12 @@ class _EditarPageState extends State<EditarPage> {
                               mask: cpfMask,
                               keyboardType: TextInputType.number,
                               validator: (v) {
-                                if (v?.isEmpty ?? true) return 'Campo obrigatório';
-                                if (v!.replaceAll(RegExp(r'[^\d]'), '').length != 11) {
+                                if (v?.isEmpty ?? true)
+                                  return 'Campo obrigatório';
+                                if (v!
+                                        .replaceAll(RegExp(r'[^\d]'), '')
+                                        .length !=
+                                    11) {
                                   return 'CPF inválido';
                                 }
                                 return null;
@@ -421,7 +501,9 @@ class _EditarPageState extends State<EditarPage> {
                               controller: dataNascimentoController,
                               label: 'Data de Nascimento *',
                               onTap: _selecionarData,
-                              validator: (v) => v?.isEmpty ?? true ? 'Campo obrigatório' : null,
+                              validator: (v) => v?.isEmpty ?? true
+                                  ? 'Campo obrigatório'
+                                  : null,
                             ),
                           ),
                         ],
@@ -433,7 +515,8 @@ class _EditarPageState extends State<EditarPage> {
                               value: sexoSelecionado,
                               label: 'Sexo',
                               items: UsuarioConstants.sexoOpcoes,
-                              onChanged: (v) => setState(() => sexoSelecionado = v),
+                              onChanged: (v) =>
+                                  setState(() => sexoSelecionado = v),
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -442,7 +525,8 @@ class _EditarPageState extends State<EditarPage> {
                               value: estadoCivilSelecionado,
                               label: 'Estado Civil',
                               items: UsuarioConstants.estadoCivilOpcoes,
-                              onChanged: (v) => setState(() => estadoCivilSelecionado = v),
+                              onChanged: (v) =>
+                                  setState(() => estadoCivilSelecionado = v),
                             ),
                           ),
                         ],
@@ -451,7 +535,8 @@ class _EditarPageState extends State<EditarPage> {
                         value: tipoSanguineoSelecionado,
                         label: 'Tipo Sanguíneo',
                         items: UsuarioConstants.tipoSanguineoOpcoes,
-                        onChanged: (v) => setState(() => tipoSanguineoSelecionado = v),
+                        onChanged: (v) =>
+                            setState(() => tipoSanguineoSelecionado = v),
                       ),
 
                       const SizedBox(height: 24),
@@ -464,7 +549,8 @@ class _EditarPageState extends State<EditarPage> {
                         icon: Icons.phone,
                         mask: telefoneMask,
                         keyboardType: TextInputType.phone,
-                        validator: (v) => v?.isEmpty ?? true ? 'Campo obrigatório' : null,
+                        validator: (v) =>
+                            v?.isEmpty ?? true ? 'Campo obrigatório' : null,
                       ),
                       _buildCampoTexto(
                         controller: emailController,
@@ -486,7 +572,8 @@ class _EditarPageState extends State<EditarPage> {
                         controller: enderecoController,
                         label: 'Logradouro *',
                         icon: Icons.home,
-                        validator: (v) => v?.isEmpty ?? true ? 'Campo obrigatório' : null,
+                        validator: (v) =>
+                            v?.isEmpty ?? true ? 'Campo obrigatório' : null,
                       ),
                       Row(
                         children: [
@@ -495,7 +582,9 @@ class _EditarPageState extends State<EditarPage> {
                               controller: bairroController,
                               label: 'Bairro *',
                               icon: Icons.location_city,
-                              validator: (v) => v?.isEmpty ?? true ? 'Campo obrigatório' : null,
+                              validator: (v) => v?.isEmpty ?? true
+                                  ? 'Campo obrigatório'
+                                  : null,
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -506,7 +595,9 @@ class _EditarPageState extends State<EditarPage> {
                               icon: Icons.pin_drop,
                               mask: cepMask,
                               keyboardType: TextInputType.number,
-                              validator: (v) => v?.isEmpty ?? true ? 'Campo obrigatório' : null,
+                              validator: (v) => v?.isEmpty ?? true
+                                  ? 'Campo obrigatório'
+                                  : null,
                             ),
                           ),
                         ],
@@ -519,7 +610,9 @@ class _EditarPageState extends State<EditarPage> {
                               controller: cidadeController,
                               label: 'Cidade *',
                               icon: Icons.location_on,
-                              validator: (v) => v?.isEmpty ?? true ? 'Campo obrigatório' : null,
+                              validator: (v) => v?.isEmpty ?? true
+                                  ? 'Campo obrigatório'
+                                  : null,
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -529,7 +622,9 @@ class _EditarPageState extends State<EditarPage> {
                               label: 'UF *',
                               icon: Icons.map,
                               maxLength: 2,
-                              validator: (v) => v?.isEmpty ?? true ? 'Campo obrigatório' : null,
+                              validator: (v) => v?.isEmpty ?? true
+                                  ? 'Campo obrigatório'
+                                  : null,
                             ),
                           ),
                         ],
@@ -544,7 +639,38 @@ class _EditarPageState extends State<EditarPage> {
                         label: 'Núcleo *',
                         items: UsuarioConstants.nucleoOpcoes,
                         onChanged: (v) => setState(() => nucleoSelecionado = v),
-                        validator: (v) => v == null ? 'Campo obrigatório' : null,
+                        validator: (v) =>
+                            v == null ? 'Campo obrigatório' : null,
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // Batismo
+                      _buildSecaoTitulo('Batismo'),
+                      _buildCampoData(
+                        controller: dataBatismoController,
+                        label: 'Data de Batismo',
+                        onTap: _selecionarDataBatismo,
+                      ),
+                      _buildCampoTexto(
+                        controller: mediumCelebranteBatismoController,
+                        label: 'Medium Celebrante',
+                        icon: Icons.person,
+                      ),
+                      _buildCampoTexto(
+                        controller: guiaCelebranteBatismoController,
+                        label: 'Guia Celebrante',
+                        icon: Icons.person_outline,
+                      ),
+                      _buildCampoTexto(
+                        controller: padrinhoBatismoController,
+                        label: 'Padrinho do Batismo',
+                        icon: Icons.person_add,
+                      ),
+                      _buildCampoTexto(
+                        controller: madrinhaBatismoController,
+                        label: 'Madrinha do Batismo',
+                        icon: Icons.person_add_alt_1,
                       ),
 
                       const SizedBox(height: 24),
@@ -684,7 +810,7 @@ class _EditarPageState extends State<EditarPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: DropdownButtonFormField<String>(
-        value: value,
+        initialValue: value,
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),

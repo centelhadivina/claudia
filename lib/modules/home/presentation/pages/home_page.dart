@@ -289,11 +289,11 @@ class _AppDrawer extends StatelessWidget {
                       fit: BoxFit.contain,
                     ),
                     Image.asset(
-                            'assets/images/claudia.jpeg',
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.contain,
-                          ),
+                      'assets/images/claudia.jpeg',
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.contain,
+                    ),
                   ],
                 ),
               ],
@@ -485,6 +485,7 @@ class _AppDrawer extends StatelessWidget {
       'remove': Icons.remove,
       'auto_awesome': Icons.auto_awesome,
       'spa': Icons.spa,
+      'bug_report': Icons.bug_report,
     };
 
     return iconMap[iconName] ?? Icons.circle;

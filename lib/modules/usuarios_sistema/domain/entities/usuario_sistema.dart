@@ -13,6 +13,7 @@ class UsuarioSistema extends Equatable {
   final bool ativo;
   final DateTime dataCriacao;
   final DateTime? dataUltimaAlteracao;
+  final DateTime? ultimoAcesso;
   final String? observacoes;
 
   const UsuarioSistema({
@@ -26,6 +27,7 @@ class UsuarioSistema extends Equatable {
     required this.ativo,
     required this.dataCriacao,
     this.dataUltimaAlteracao,
+    this.ultimoAcesso,
     this.observacoes,
   });
 
@@ -56,6 +58,7 @@ class UsuarioSistema extends Equatable {
     ativo,
     dataCriacao,
     dataUltimaAlteracao,
+    ultimoAcesso,
     observacoes,
   ];
 
@@ -70,6 +73,7 @@ class UsuarioSistema extends Equatable {
     bool? ativo,
     DateTime? dataCriacao,
     DateTime? dataUltimaAlteracao,
+    DateTime? ultimoAcesso,
     String? observacoes,
   }) {
     return UsuarioSistema(
@@ -83,6 +87,7 @@ class UsuarioSistema extends Equatable {
       ativo: ativo ?? this.ativo,
       dataCriacao: dataCriacao ?? this.dataCriacao,
       dataUltimaAlteracao: dataUltimaAlteracao ?? this.dataUltimaAlteracao,
+      ultimoAcesso: ultimoAcesso ?? this.ultimoAcesso,
       observacoes: observacoes ?? this.observacoes,
     );
   }
