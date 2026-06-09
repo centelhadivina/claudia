@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/error/exceptions.dart';
@@ -8,6 +10,7 @@ import 'usuario_sistema_datasource.dart';
 /// Datasource de usuários do sistema conectado ao Supabase
 class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
   final SupabaseService _supabaseService;
+  static const Duration _timeoutDuration = Duration(seconds: 30);
 
   UsuarioSistemaSupabaseDatasource(this._supabaseService);
 
@@ -27,7 +30,8 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
             .from('usuarios')
             .select('numero_cadastro')
             .eq('numero_cadastro', data['numero_cadastro'])
-            .maybeSingle();
+            .maybeSingle()
+            .timeout(_timeoutDuration);
 
         if (cadastroExiste == null) {
           throw ServerException(
@@ -54,7 +58,12 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
             value == null,
       );
 
-      await _supabaseService.client.from('usuarios_sistema').insert(data);
+      await _supabaseService.client
+          .from('usuarios_sistema')
+          .insert(data)
+          .timeout(_timeoutDuration);
+    } on TimeoutException {
+      throw ServerException('Timeout ao adicionar usuário. Tente novamente.');
     } on PostgrestException catch (error) {
       if (error.code == '23505') {
         throw ServerException('Email já cadastrado');
@@ -93,7 +102,10 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
       await _supabaseService.client
           .from('usuarios_sistema')
           .update(data)
-          .eq('id', usuario.id);
+          .eq('id', usuario.id)
+          .timeout(_timeoutDuration);
+    } on TimeoutException {
+      throw ServerException('Timeout ao atualizar usuário. Tente novamente.');
     } on PostgrestException catch (error) {
       if (error.code == '23505') {
         throw ServerException('Email já cadastrado');
@@ -111,10 +123,13 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
           .from('usuarios_sistema')
           .select()
           .eq('numero_cadastro', numeroCadastro)
-          .maybeSingle();
+          .maybeSingle()
+          .timeout(_timeoutDuration);
 
       if (response == null) return null;
       return UsuarioSistemaModel.fromJson(response);
+    } on TimeoutException {
+      throw ServerException('Timeout ao buscar usuário. Tente novamente.');
     } on PostgrestException catch (error) {
       throw ServerException('Erro ao buscar usuário: ${error.message}');
     } catch (error) {
@@ -129,10 +144,13 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
           .from('usuarios_sistema')
           .select()
           .eq('email', email)
-          .maybeSingle();
+          .maybeSingle()
+          .timeout(_timeoutDuration);
 
       if (response == null) return null;
       return UsuarioSistemaModel.fromJson(response);
+    } on TimeoutException {
+      throw ServerException('Timeout ao buscar usuário. Tente novamente.');
     } on PostgrestException catch (error) {
       throw ServerException('Erro ao buscar usuário: ${error.message}');
     } catch (error) {
@@ -149,10 +167,13 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
           .from('usuarios_sistema')
           .select()
           .or('email.eq.$emailOuUsername,username.eq.$emailOuUsername')
-          .maybeSingle();
+          .maybeSingle()
+          .timeout(_timeoutDuration);
 
       if (response == null) return null;
       return UsuarioSistemaModel.fromJson(response);
+    } on TimeoutException {
+      throw ServerException('Timeout ao buscar usuário. Tente novamente.');
     } on PostgrestException catch (error) {
       throw ServerException('Erro ao buscar usuário: ${error.message}');
     } catch (error) {
@@ -167,10 +188,13 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
           .from('usuarios_sistema')
           .select()
           .eq('id', id)
-          .maybeSingle();
+          .maybeSingle()
+          .timeout(_timeoutDuration);
 
       if (response == null) return null;
       return UsuarioSistemaModel.fromJson(response);
+    } on TimeoutException {
+      throw ServerException('Timeout ao buscar usuário. Tente novamente.');
     } on PostgrestException catch (error) {
       throw ServerException('Erro ao buscar usuário: ${error.message}');
     } catch (error) {
@@ -185,10 +209,13 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
           .from('usuarios_sistema')
           .select()
           .eq('username', username)
-          .maybeSingle();
+          .maybeSingle()
+          .timeout(_timeoutDuration);
 
       if (response == null) return null;
       return UsuarioSistemaModel.fromJson(response);
+    } on TimeoutException {
+      throw ServerException('Timeout ao buscar usuário. Tente novamente.');
     } on PostgrestException catch (error) {
       throw ServerException('Erro ao buscar usuário: ${error.message}');
     } catch (error) {
@@ -202,11 +229,14 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
       final response = await _supabaseService.client
           .from('usuarios_sistema')
           .select()
-          .order('nome', ascending: true);
+          .order('nome', ascending: true)
+          .timeout(_timeoutDuration);
 
       return (response as List)
           .map((json) => UsuarioSistemaModel.fromJson(json))
           .toList();
+    } on TimeoutException {
+      throw ServerException('Timeout ao buscar usuários. Tente novamente.');
     } on PostgrestException catch (error) {
       throw ServerException('Erro ao buscar usuários: ${error.message}');
     } catch (error) {
@@ -220,7 +250,10 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
       await _supabaseService.client
           .from('usuarios_sistema')
           .delete()
-          .eq('id', id);
+          .eq('id', id)
+          .timeout(_timeoutDuration);
+    } on TimeoutException {
+      throw ServerException('Timeout ao remover usuário. Tente novamente.');
     } on PostgrestException catch (error) {
       throw ServerException('Erro ao remover usuário: ${error.message}');
     } catch (error) {
